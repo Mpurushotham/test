@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI@Solutions - Comprehensive Cybersecurity Solutions & Architecture - CyberTarget</title>
+    <meta name="description" content="Industry-approved cybersecurity solutions, attack mitigation strategies, vulnerability databases, and architecture diagrams for cloud and on-premise environments.">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <div class="logo-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h2>CyberTarget</h2>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="index.html#about" class="nav-link">About</a>
+                </li>
+                <li class="nav-item">
+                    <a href="index.html#services" class="nav-link">Services</a>
+                </li>
+                <li class="nav-item">
+                    <a href="index.html#blogs" class="nav-link">Tech Blogs</a>
+                </li>
+                <li class="nav-item">
+                    <a href="index.html#contact" class="nav-link">Contact</a>
+                </li>
+                <li class="nav-item">
+                    <a href="askuniversal.html" class="nav-link">AskUniversal AI</a>
+                </li>
+                <li class="nav-item">
+                    <a href="ai-solutions.html" class="nav-link active">AI@Solutions</a>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">AI@Solutions</h1>
+                <p class="hero-subtitle">Comprehensive cybersecurity solutions, attack mitigation strategies, vulnerability databases, and proven architecture blueprints for modern enterprises.</p>
+                <div class="hero-buttons">
+                    <a href="#solutions" class="btn btn-primary">Explore Solutions</a>
+                    <a href="#attacks" class="btn btn-secondary">View Attack Database</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="hero-graphic">
+                    <i class="fas fa-shield-alt"></i>
+                    <i class="fas fa-database"></i>
+                    <i class="fas fa-project-diagram"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Stats -->
+    <section class="quick-stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <i class="fas fa-database"></i>
+                    <h3>500+</h3>
+                    <p>Industry Solutions</p>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-bug"></i>
+                    <h3>1000+</h3>
+                    <p>Vulnerabilities Tracked</p>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>200+</h3>
+                    <p>Attack Mitigations</p>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-cloud"></i>
+                    <h3>50+</h3>
+                    <p>Architecture Blueprints</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cloud Solutions Categories -->
+    <section id="solutions" class="cloud-solutions">
+        <div class="container">
+            <div class="section-header">
+                <h2>Cloud-Specific Security Solutions</h2>
+                <p>Industry-approved solutions categorized by cloud providers with step-by-step implementation guides</p>
+            </div>
+
+            <!-- AWS Solutions -->
+            <div class="cloud-category">
+                <div class="cloud-header">
+                    <i class="fab fa-aws"></i>
+                    <h3>Amazon Web Services (AWS)</h3>
+                    <p>Comprehensive security solutions for AWS environments</p>
+                </div>
+                <div class="solutions-grid">
+                    <div class="solution-card">
+                        <div class="solution-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h4>Zero Trust Architecture</h4>
+                        <p>Implement zero trust security model using AWS services</p>
+                        <div class="solution-tags">
+                            <span class="tag">IAM</span>
+                            <span class="tag">VPC</span>
+                            <span class="tag">WAF</span>
+                        </div>
+                        <button class="btn btn-outline" onclick="showSolution('aws-zero-trust')">View Solution</button>
+                    </div>
+                    <div class="solution-card">
+                        <div class="solution-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <h4>Data Encryption at Scale</h4>
+                        <p>End-to-end encryption for data at rest and in transit</p>
+                        <div class="solution-tags">
+                            <span class="tag">KMS</span>
+                            <span class="tag">S3</span>
+                            <span class="tag">CloudHSM</span>
+                        </div>
+                        <button class="btn btn-outline" onclick="showSolution('aws-encryption')">View Solution</button>
+                    </div>
+                    <div class="solution-card">
+                        <div class="solution-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <h4>Security Monitoring & SIEM</h4>
+                        <p>Comprehensive monitoring using AWS Security Hub and GuardDuty</p>
+                        <div class="solution-tags">
+                            <span class="tag">CloudTrail</span>
+                            <span class="tag">GuardDuty</span>
+                            <span class="tag">Security Hub</span>
+                        </div>
+                        <button class="btn btn-outline" onclick="showSolution('aws-monitoring')">View Solution</button>
+                    </div>
+                    <div class="solution-card">
+                        <div class="solution-icon">
+                            <i class="fas fa-network-wired"></i>
+                        </div>
+                        <h4>Network Security</h4>
+                        <p>Advanced network segmentation and protection</p>
+                        <div class="solution-tags">
+                            <span class="tag">VPC</span>
+                            <span class="tag">NACL</span>
+                            <span class="tag">Security Groups</span>
+                        </div>
+                        <button class="btn btn-outline" onclick="showSolution('aws-network')">View Solution</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Azure Solutions -->
+            <div class="cloud-category">
+                <div class="cloud-header">
+                    <i class="fab fa-microsoft"></i>
+                    <h3>Microsoft Azure</h3>
+                    <p>Enterprise-grade security solutions for Azure cloud</p>
+                </div>
+                <div class="solutions-grid">
+                    <div class="solution-card">
+                        <div class="solution-icon">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <h4>Identity & Access Management</h4>
+                        <p>Azure AD-based identity protection and conditional access</p>
+                        <div class="solution-tags">
+                            <span class="tag">Azure AD</span>
+                            <span class="tag">PIM</span>
+                            <span class="tag">Conditional Access</span>
+                        </div>
+                        <button class="btn btn-outline" onclick="showSolution('azure-iam')">View Solution</button>
+                    </div>
+                    <div class="solution-card">
+                        <div class="solution-icon">
+                            <i class="fas fa-shield-virus"></i>
+                        </div>
+                        <h4>Threat Protection</h4>
+                        <p>Advanced threat protection using Azure Security Center</p>
+                        <div class="solution-tags">
+                            <span class="tag">Security Center</span>
+                            <span class="tag">Sentinel</span>
+                            <span class="tag">Defender</span>
+                        </div>
+                        <button class="btn btn-outline" onclick="showSolution('azure-threat')">View Solution</button>
+                    </div>
+                    <div class="solution-card">
+                        <div class="solution-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <h4>Data Protection</h4>
+                        <p>Comprehensive data protection and backup strategies</p>
+                        <div class="solution-tags">
+                            <span class="tag">Key Vault</span>
+                            <span class="tag">Backup</span>
+                            <span class="tag">Purview</span>
+                        </div>
+                        <button class="btn btn-outline" onclick="showSolution('azure-data')">View Solution</button>
+                    </div>
+                    <div class="solution-card">
+                        <div class="solution-icon">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <h4>DevSecOps Integration</h4>
+                        <p>Security integration in CI/CD pipelines</p>
+                        <div class="solution-tags">
+                            <span class="tag">DevOps</span>
+                            <span class="tag">Security</span>
+                            <span class="tag">Automation</span>
+                        </div>
+                        <button class="btn btn-outline" onclick="showSolution('azure-devsecops')">View Solution</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GCP Solutions -->
+            <div class="cloud-category">
+                <div class="cloud-header">
+                    <i class="fab fa-google"></i>
+                    <h3>Google Cloud Platform (GCP)</h3>
+                    <p>AI-powered security solutions for Google Cloud</p>
+                </div>
+                <div class="solutions-grid">
+                    <div class="solution-card">
+                        <div class="solution-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h4>AI-Powered Security</h4>
+                        <p>Machine learning-based threat detection and response</p>
+                        <div class="solution-tags">
+                            <span class="tag">AI Platform</span>
+                            <span class="tag">AutoML</span>
+                            <span class="tag">Vertex AI</span>
+                        </div>
+                        <button class="btn btn-outline" onclick="showSolution('gcp-ai')">View Solution</button>
+                    </div>
+                    <div class="solution-card">
+                        <div class="solution-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <h4>Zero Trust Security</h4>
+                        <p>BeyondCorp Enterprise implementation</p>
+                        <div class="solution-tags">
+                            <span class="tag">BeyondCorp</span>
+                            <span class="tag">Identity</span>
+                            <span class="tag">Access</span>
+                        </div>
+                        <button class="btn btn-outline" onclick="showSolution('gcp-zero-trust')">View Solution</button>
+                    </div>
+                    <div class="solution-card">
+                        <div class="solution-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h4>Security Command Center</h4>
+                        <p>Centralized security management and monitoring</p>
+                        <div class="solution-tags">
+                            <span class="tag">SCC</span>
+                            <span class="tag">Monitoring</span>
+                            <span class="tag">Compliance</span>
+                        </div>
+                        <button class="btn btn-outline" onclick="showSolution('gcp-scc')">View Solution</button>
+                    </div>
+                    <div class="solution-card">
+                        <div class="solution-icon">
+                            <i class="fas fa-network-wired"></i>
+                        </div>
+                        <h4>Network Security</h4>
+                        <p>Advanced network security with Cloud Armor</p>
+                        <div class="solution-tags">
+                            <span class="tag">Cloud Armor</span>
+                            <span class="tag">VPC</span>
+                            <span class="tag">Firewall</span>
+                        </div>
+                        <button class="btn btn-outline" onclick="showSolution('gcp-network')">View Solution</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- OCI Solutions -->
+            <div class="cloud-category">
+                <div class="cloud-header">
+                    <i class="fas fa-database"></i>
+                    <h3>Oracle Cloud Infrastructure (OCI)</h3>
+                    <p>Enterprise security solutions for Oracle Cloud</p>
+                </div>
+                <div class="solutions-grid">
+                    <div class="solution-card">
+                        <div class="solution-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h4>Identity & Compliance</h4>
+                        <p>Oracle Identity Cloud Service and compliance frameworks</p>
+                        <div class="solution-tags">
+                            <span class="tag">IDCS</span>
+                            <span class="tag">Compliance</span>
+                            <span class="tag">Governance</span>
+                        </div>
+                        <button class="btn btn-outline" onclick="showSolution('oci-identity')">View Solution</button>
+                    </div>
+                    <div class="solution-card">
+                        <div class="solution-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <h4>Database Security</h4>
+                        <p>Advanced database security and encryption</p>
+                        <div class="solution-tags">
+                            <span class="tag">TDE</span>
+                            <span class="tag">Vault</span>
+                            <span class="tag">Audit</span>
+                        </div>
+                        <button class="btn btn-outline" onclick="showSolution('oci-database')">View Solution</button>
+                    </div>
+                    <div class="solution-card">
+                        <div class="solution-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <h4>Security Monitoring</h4>
+                        <p>Comprehensive security monitoring and analytics</p>
+                        <div class="solution-tags">
+                            <span class="tag">Monitoring</span>
+                            <span class="tag">Analytics</span>
+                            <span class="tag">Logging</span>
+                        </div>
+                        <button class="btn btn-outline" onclick="showSolution('oci-monitoring')">View Solution</button>
+                    </div>
+                    <div class="solution-card">
+                        <div class="solution-icon">
+                            <i class="fas fa-network-wired"></i>
+                        </div>
+                        <h4>Network Security</h4>
+                        <p>Advanced network security and segmentation</p>
+                        <div class="solution-tags">
+                            <span class="tag">VCN</span>
+                            <span class="tag">NSG</span>
+                            <span class="tag">WAF</span>
+                        </div>
+                        <button class="btn btn-outline" onclick="showSolution('oci-network')">View Solution</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cyber Attack Database -->
+    <section id="attacks" class="attack-database">
+        <div class="container">
+            <div class="section-header">
+                <h2>Cyber Attack Database (2000-Present)</h2>
+                <p>Comprehensive database of major cyber attacks with mitigation strategies and lessons learned</p>
+            </div>
+
+            <div class="attack-timeline">
+                <div class="timeline-item">
+                    <div class="timeline-year">2024</div>
+                    <div class="attack-card">
+                        <h4>Microsoft Exchange Server Attacks</h4>
+                        <p><strong>Attack Type:</strong> Zero-day exploits, Ransomware</p>
+                        <p><strong>Impact:</strong> 30,000+ organizations affected globally</p>
+                        <p><strong>Mitigation:</strong> Immediate patching, network segmentation, MFA implementation</p>
+                        <div class="attack-tags">
+                            <span class="tag critical">Critical</span>
+                            <span class="tag">Zero-day</span>
+                            <span class="tag">Ransomware</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-year">2023</div>
+                    <div class="attack-card">
+                        <h4>MOVEit Transfer Vulnerability</h4>
+                        <p><strong>Attack Type:</strong> SQL injection, Data breach</p>
+                        <p><strong>Impact:</strong> 1,000+ organizations, 60+ million records</p>
+                        <p><strong>Mitigation:</strong> Input validation, WAF deployment, regular security audits</p>
+                        <div class="attack-tags">
+                            <span class="tag critical">Critical</span>
+                            <span class="tag">SQL Injection</span>
+                            <span class="tag">Data Breach</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-year">2022</div>
+                    <div class="attack-card">
+                        <h4>Log4j Vulnerability (Log4Shell)</h4>
+                        <p><strong>Attack Type:</strong> Remote code execution</p>
+                        <p><strong>Impact:</strong> Millions of applications affected worldwide</p>
+                        <p><strong>Mitigation:</strong> Immediate patching, vulnerability scanning, runtime protection</p>
+                        <div class="attack-tags">
+                            <span class="tag critical">Critical</span>
+                            <span class="tag">RCE</span>
+                            <span class="tag">Supply Chain</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-year">2021</div>
+                    <div class="attack-card">
+                        <h4>SolarWinds Supply Chain Attack</h4>
+                        <p><strong>Attack Type:</strong> Supply chain compromise, APT</p>
+                        <p><strong>Impact:</strong> 18,000+ organizations, government agencies</p>
+                        <p><strong>Mitigation:</strong> Supply chain security, zero trust architecture, continuous monitoring</p>
+                        <div class="attack-tags">
+                            <span class="tag critical">Critical</span>
+                            <span class="tag">APT</span>
+                            <span class="tag">Supply Chain</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-year">2020</div>
+                    <div class="attack-card">
+                        <h4>COVID-19 Phishing Campaigns</h4>
+                        <p><strong>Attack Type:</strong> Phishing, Social engineering</p>
+                        <p><strong>Impact:</strong> Massive increase in phishing attacks globally</p>
+                        <p><strong>Mitigation:</strong> Security awareness training, email filtering, MFA</p>
+                        <div class="attack-tags">
+                            <span class="tag high">High</span>
+                            <span class="tag">Phishing</span>
+                            <span class="tag">Social Engineering</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-year">2019</div>
+                    <div class="attack-card">
+                        <h4>Capital One Data Breach</h4>
+                        <p><strong>Attack Type:</strong> Misconfigured WAF, Data breach</p>
+                        <p><strong>Impact:</strong> 100+ million customers affected</p>
+                        <p><strong>Mitigation:</strong> Proper WAF configuration, regular security assessments</p>
+                        <div class="attack-tags">
+                            <span class="tag critical">Critical</span>
+                            <span class="tag">Data Breach</span>
+                            <span class="tag">Misconfiguration</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-year">2017</div>
+                    <div class="attack-card">
+                        <h4>WannaCry Ransomware</h4>
+                        <p><strong>Attack Type:</strong> Ransomware, Worm</p>
+                        <p><strong>Impact:</strong> 300,000+ computers in 150+ countries</p>
+                        <p><strong>Mitigation:</strong> Regular patching, network segmentation, backup strategies</p>
+                        <div class="attack-tags">
+                            <span class="tag critical">Critical</span>
+                            <span class="tag">Ransomware</span>
+                            <span class="tag">Worm</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-year">2016</div>
+                    <div class="attack-card">
+                        <h4>Mirai Botnet</h4>
+                        <p><strong>Attack Type:</strong> DDoS, IoT compromise</p>
+                        <p><strong>Impact:</strong> Major internet outages, 100,000+ IoT devices</p>
+                        <p><strong>Mitigation:</strong> IoT security standards, network monitoring, device hardening</p>
+                        <div class="attack-tags">
+                            <span class="tag high">High</span>
+                            <span class="tag">DDoS</span>
+                            <span class="tag">IoT</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-year">2014</div>
+                    <div class="attack-card">
+                        <h4>Heartbleed Bug</h4>
+                        <p><strong>Attack Type:</strong> Buffer overflow, Information disclosure</p>
+                        <p><strong>Impact:</strong> 66% of internet servers vulnerable</p>
+                        <p><strong>Mitigation:</strong> OpenSSL patching, certificate replacement, vulnerability scanning</p>
+                        <div class="attack-tags">
+                            <span class="tag critical">Critical</span>
+                            <span class="tag">Buffer Overflow</span>
+                            <span class="tag">OpenSSL</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-year">2013</div>
+                    <div class="attack-card">
+                        <h4>Target Data Breach</h4>
+                        <p><strong>Attack Type:</strong> Point-of-sale malware, Data breach</p>
+                        <p><strong>Impact:</strong> 40+ million credit cards compromised</p>
+                        <p><strong>Mitigation:</strong> Network segmentation, endpoint protection, payment security</p>
+                        <div class="attack-tags">
+                            <span class="tag critical">Critical</span>
+                            <span class="tag">POS Malware</span>
+                            <span class="tag">Data Breach</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-year">2010</div>
+                    <div class="attack-card">
+                        <h4>Stuxnet Worm</h4>
+                        <p><strong>Attack Type:</strong> Industrial malware, APT</p>
+                        <p><strong>Impact:</strong> Iranian nuclear facilities, first known cyber weapon</p>
+                        <p><strong>Mitigation:</strong> Air-gapped networks, industrial security, anomaly detection</p>
+                        <div class="attack-tags">
+                            <span class="tag critical">Critical</span>
+                            <span class="tag">APT</span>
+                            <span class="tag">Industrial</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-year">2008</div>
+                    <div class="attack-card">
+                        <h4>Conficker Worm</h4>
+                        <p><strong>Attack Type:</strong> Worm, Botnet</p>
+                        <p><strong>Impact:</strong> 9+ million computers infected globally</p>
+                        <p><strong>Mitigation:</strong> Regular patching, network monitoring, malware protection</p>
+                        <div class="attack-tags">
+                            <span class="tag high">High</span>
+                            <span class="tag">Worm</span>
+                            <span class="tag">Botnet</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-year">2000</div>
+                    <div class="attack-card">
+                        <h4>ILOVEYOU Virus</h4>
+                        <p><strong>Attack Type:</strong> Email virus, Social engineering</p>
+                        <p><strong>Impact:</strong> 50+ million computers affected, $10+ billion damage</p>
+                        <p><strong>Mitigation:</strong> Email filtering, user education, antivirus software</p>
+                        <div class="attack-tags">
+                            <span class="tag high">High</span>
+                            <span class="tag">Virus</span>
+                            <span class="tag">Email</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Vulnerability Database -->
+    <section class="vulnerability-database">
+        <div class="container">
+            <div class="section-header">
+                <h2>Global Vulnerability Database</h2>
+                <p>Comprehensive database of vulnerabilities with mitigation strategies and remediation steps</p>
+            </div>
+
+            <div class="vuln-categories">
+                <div class="vuln-category">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Critical Vulnerabilities</h3>
+                    <div class="vuln-list">
+                        <div class="vuln-item critical">
+                            <div class="vuln-header">
+                                <h4>CVE-2024-3094</h4>
+                                <span class="cvss-score">9.8</span>
+                            </div>
+                            <p><strong>Description:</strong> XZ Utils backdoor allowing remote code execution</p>
+                            <p><strong>Affected:</strong> XZ Utils 5.6.0, 5.6.1</p>
+                            <p><strong>Mitigation:</strong> Immediate update to XZ Utils 5.6.2+, system audit</p>
+                        </div>
+                        <div class="vuln-item critical">
+                            <div class="vuln-header">
+                                <h4>CVE-2023-44487</h4>
+                                <span class="cvss-score">9.8</span>
+                            </div>
+                            <p><strong>Description:</strong> HTTP/2 Rapid Reset Attack causing DDoS</p>
+                            <p><strong>Affected:</strong> HTTP/2 implementations</p>
+                            <p><strong>Mitigation:</strong> Update HTTP/2 servers, implement rate limiting</p>
+                        </div>
+                        <div class="vuln-item critical">
+                            <div class="vuln-header">
+                                <h4>CVE-2022-1388</h4>
+                                <span class="cvss-score">9.8</span>
+                            </div>
+                            <p><strong>Description:</strong> F5 BIG-IP iControl REST authentication bypass</p>
+                            <p><strong>Affected:</strong> F5 BIG-IP 16.1.0-16.1.2, 15.1.0-15.1.5</p>
+                            <p><strong>Mitigation:</strong> Immediate patching, network isolation, access review</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="vuln-category">
+                    <h3><i class="fas fa-exclamation-circle"></i> High Severity Vulnerabilities</h3>
+                    <div class="vuln-list">
+                        <div class="vuln-item high">
+                            <div class="vuln-header">
+                                <h4>CVE-2023-23397</h4>
+                                <span class="cvss-score">8.1</span>
+                            </div>
+                            <p><strong>Description:</strong> Microsoft Outlook elevation of privilege</p>
+                            <p><strong>Affected:</strong> Microsoft Outlook 2013-2021</p>
+                            <p><strong>Mitigation:</strong> Apply security updates, disable calendar sharing</p>
+                        </div>
+                        <div class="vuln-item high">
+                            <div class="vuln-header">
+                                <h4>CVE-2022-30190</h4>
+                                <span class="cvss-score">7.8</span>
+                            </div>
+                            <p><strong>Description:</strong> Microsoft Support Diagnostic Tool RCE</p>
+                            <p><strong>Affected:</strong> Windows systems with MSDT</p>
+                            <p><strong>Mitigation:</strong> Disable MSDT protocol, apply patches</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="vuln-category">
+                    <h3><i class="fas fa-info-circle"></i> Medium Severity Vulnerabilities</h3>
+                    <div class="vuln-list">
+                        <div class="vuln-item medium">
+                            <div class="vuln-header">
+                                <h4>CVE-2023-25690</h4>
+                                <span class="cvss-score">6.5</span>
+                            </div>
+                            <p><strong>Description:</strong> Apache HTTP Server request smuggling</p>
+                            <p><strong>Affected:</strong> Apache HTTP Server 2.4.0-2.4.55</p>
+                            <p><strong>Mitigation:</strong> Update to Apache 2.4.56+, configure request limits</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Diagrams -->
+    <section class="architecture-diagrams">
+        <div class="container">
+            <div class="section-header">
+                <h2>Cybersecurity Architecture Blueprints</h2>
+                <p>Proven architecture diagrams and solutions for cloud and on-premise environments</p>
+            </div>
+
+            <div class="architecture-grid">
+                <div class="arch-card">
+                    <div class="arch-image">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Zero Trust Architecture</h3>
+                    <p>Comprehensive zero trust implementation for modern enterprises</p>
+                    <div class="arch-tags">
+                        <span class="tag">Identity</span>
+                        <span class="tag">Network</span>
+                        <span class="tag">Data</span>
+                    </div>
+                    <button class="btn btn-primary" onclick="showArchitecture('zero-trust')">View Architecture</button>
+                </div>
+
+                <div class="arch-card">
+                    <div class="arch-image">
+                        <i class="fas fa-cloud"></i>
+                    </div>
+                    <h3>Cloud Security Framework</h3>
+                    <p>Multi-cloud security architecture with shared responsibility model</p>
+                    <div class="arch-tags">
+                        <span class="tag">AWS</span>
+                        <span class="tag">Azure</span>
+                        <span class="tag">GCP</span>
+                    </div>
+                    <button class="btn btn-primary" onclick="showArchitecture('cloud-security')">View Architecture</button>
+                </div>
+
+                <div class="arch-card">
+                    <div class="arch-image">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                    <h3>Network Segmentation</h3>
+                    <p>Advanced network segmentation and micro-segmentation strategies</p>
+                    <div class="arch-tags">
+                        <span class="tag">VLAN</span>
+                        <span class="tag">SDN</span>
+                        <span class="tag">Firewall</span>
+                    </div>
+                    <button class="btn btn-primary" onclick="showArchitecture('network-seg')">View Architecture</button>
+                </div>
+
+                <div class="arch-card">
+                    <div class="arch-image">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h3>Data Center Security</h3>
+                    <p>On-premise data center security and compliance architecture</p>
+                    <div class="arch-tags">
+                        <span class="tag">Physical</span>
+                        <span class="tag">Logical</span>
+                        <span class="tag">Compliance</span>
+                    </div>
+                    <button class="btn btn-primary" onclick="showArchitecture('datacenter')">View Architecture</button>
+                </div>
+
+                <div class="arch-card">
+                    <div class="arch-image">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Mobile Security</h3>
+                    <p>Mobile device management and security architecture</p>
+                    <div class="arch-tags">
+                        <span class="tag">MDM</span>
+                        <span class="tag">BYOD</span>
+                        <span class="tag">App Security</span>
+                    </div>
+                    <button class="btn btn-primary" onclick="showArchitecture('mobile-security')">View Architecture</button>
+                </div>
+
+                <div class="arch-card">
+                    <div class="arch-image">
+                        <i class="fas fa-industry"></i>
+                    </div>
+                    <h3>Industrial Security</h3>
+                    <p>OT/IT convergence and industrial control system security</p>
+                    <div class="arch-tags">
+                        <span class="tag">OT</span>
+                        <span class="tag">SCADA</span>
+                        <span class="tag">Air Gap</span>
+                    </div>
+                    <button class="btn btn-primary" onclick="showArchitecture('industrial')">View Architecture</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution Modal -->
+    <div id="solutionModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="solutionContent"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>CyberTarget</h3>
+                    <p>Professional technology solutions and AI-powered search capabilities for modern businesses.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="index.html#services">Cybersecurity</a></li>
+                        <li><a href="index.html#services">AI Solutions</a></li>
+                        <li><a href="index.html#services">Cloud Services</a></li>
+                        <li><a href="index.html#services">Custom Development</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="index.html#blogs">Tech Blogs</a></li>
+                        <li><a href="index.html#search">AI Search</a></li>
+                        <li><a href="askuniversal.html">AskUniversal AI</a></li>
+                        <li><a href="ai-solutions.html">AI@Solutions</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact Info</h4>
+                    <p>Email: info@cybertarget.cloud</p>
+                    <p>Phone: +1 (555) 123-4567</p>
+                    <p>Domain: cybertarget.cloud</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 CyberTarget. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="ai-solutions.js"></script>
+</body>
+</html>
