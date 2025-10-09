@@ -115,14 +115,10 @@ class UniversalAI {
     async generateSolution() {
         const projectDescription = document.getElementById('projectDescription').value.trim();
         const allSelected = Object.values(this.selectedTechnologies).flat();
+        const selectedAIModel = document.getElementById('aiModelSelect').value;
         
-        if (!projectDescription) {
-            alert('Please describe your project requirements');
-            return;
-        }
-        
-        if (allSelected.length === 0) {
-            alert('Please select at least one technology');
+        if (!projectDescription && allSelected.length === 0) {
+            alert('Please provide a project description or select at least one technology.');
             return;
         }
         
@@ -132,7 +128,7 @@ class UniversalAI {
         generateBtn.disabled = true;
         
         try {
-            const solution = await this.createComprehensiveSolution(projectDescription, allSelected);
+            const solution = await this.createComprehensiveSolution(projectDescription, allSelected, selectedAIModel);
             this.displaySolution(solution);
         } catch (error) {
             console.error('Error generating solution:', error);
@@ -143,21 +139,22 @@ class UniversalAI {
         }
     }
 
-    async createComprehensiveSolution(description, technologies) {
+    async createComprehensiveSolution(description, technologies, aiModel) {
         // Simulate AI processing time
         await new Promise(resolve => setTimeout(resolve, 3000));
         
         return {
-            title: "Comprehensive Technology Solution",
-            overview: this.generateOverview(description, technologies),
-            architecture: this.generateArchitecture(technologies),
-            implementation: this.generateImplementationPlan(technologies),
-            codeExamples: this.generateCodeExamples(technologies),
-            deployment: this.generateDeploymentGuide(technologies),
-            monitoring: this.generateMonitoringStrategy(technologies),
-            security: this.generateSecurityRecommendations(technologies),
-            costEstimation: this.generateCostEstimation(technologies),
-            timeline: this.generateTimeline(technologies)
+            title: `Comprehensive Technology Solution (${aiModel.toUpperCase()})`,
+            aiModel: aiModel,
+            overview: this.generateOverview(description, technologies, aiModel),
+            architecture: this.generateArchitecture(technologies, aiModel),
+            implementation: this.generateImplementationPlan(technologies, aiModel),
+            codeExamples: this.generateCodeExamples(technologies, aiModel),
+            deployment: this.generateDeploymentGuide(technologies, aiModel),
+            monitoring: this.generateMonitoringStrategy(technologies, aiModel),
+            security: this.generateSecurityRecommendations(technologies, aiModel),
+            costEstimation: this.generateCostEstimation(technologies, aiModel),
+            timeline: this.generateTimeline(technologies, aiModel)
         };
     }
 

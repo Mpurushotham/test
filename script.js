@@ -206,7 +206,38 @@ class EnhancedAISearch {
         return content
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             .replace(/\*(.*?)\*/g, '<em>$1</em>')
-            .replace(/`(.*?)`/g, '<code>$1</code>')
+            .replace(/`(.*?)`/g, '<code style="background-color: #f1f5f9; padding: 0.2rem 0.4rem; border-radius: 4px; font-family: monospace;">$1</code>')
+            .replace(/## (.*?)(?=\n|$)/g, '<h3 style="color: #1e293b; margin: 1.5rem 0 1rem; font-size: 1.25rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem;">$1</h3>')
+            .replace(/### (.*?)(?=\n|$)/g, '<h4 style="color: #475569; margin: 1rem 0 0.5rem; font-size: 1.1rem;">$1</h4>')
+            .replace(/\|(.+)\|/g, (match, content) => {
+                const rows = content.split('\n').filter(row => row.trim());
+                if (rows.length < 2) return match;
+                
+                const header = rows[0].split('|').map(cell => cell.trim()).filter(cell => cell);
+                const separator = rows[1].split('|').map(cell => cell.trim()).filter(cell => cell);
+                const dataRows = rows.slice(2).map(row => 
+                    row.split('|').map(cell => cell.trim()).filter(cell => cell)
+                );
+                
+                let table = '<div style="overflow-x: auto; margin: 1rem 0;"><table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">';
+                table += '<thead><tr style="background-color: #f8fafc;">';
+                header.forEach(cell => {
+                    table += `<th style="border: 1px solid #e2e8f0; padding: 0.75rem; text-align: left; font-weight: 600; color: #1e293b;">${cell}</th>`;
+                });
+                table += '</tr></thead><tbody>';
+                
+                dataRows.forEach((row, index) => {
+                    table += `<tr style="${index % 2 === 0 ? 'background-color: #f8fafc;' : 'background-color: white;'}">`;
+                    row.forEach(cell => {
+                        table += `<td style="border: 1px solid #e2e8f0; padding: 0.75rem; color: #475569;">${cell}</td>`;
+                    });
+                    table += '</tr>';
+                });
+                
+                table += '</tbody></table></div>';
+                return table;
+            })
+            .replace(/```([\s\S]*?)```/g, '<pre style="background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 8px; overflow-x: auto; margin: 1rem 0; font-family: \'Courier New\', \'Monaco\', \'Menlo\', monospace; font-size: 0.875rem; line-height: 1.6;"><code>$1</code></pre>')
             .replace(/\n/g, '<br>');
     }
 
@@ -247,27 +278,37 @@ class EnhancedAISearch {
         return responses[model] || responses['gpt-4'];
     }
 
-    getGPT4Response(message) {
-        if (message.includes('cybersecurity') || message.includes('security')) {
-            return `**Cybersecurity Analysis (GPT-4)**
+    getGPT4Response(message, hasFiles = false) {
+        const lowerMessage = message.toLowerCase();
+        
+        if (lowerMessage.includes('cybersecurity') || lowerMessage.includes('security')) {
+            return `**🔒 Cybersecurity Analysis (GPT-4)**
 
-Based on your query, here's a comprehensive analysis:
+Based on your query about "${message}", here's a comprehensive analysis:
 
-**Key Security Considerations:**
+## **Key Security Considerations**
 • Implement zero-trust architecture principles
 • Deploy advanced threat detection using AI/ML
 • Regular security audits and penetration testing
 • Employee training and awareness programs
 • Multi-factor authentication across all systems
 
-**Recommended Actions:**
+## **Recommended Actions**
 1. Conduct a comprehensive security assessment
 2. Implement endpoint detection and response (EDR)
 3. Set up security information and event management (SIEM)
 4. Create incident response procedures
 5. Regular backup and disaster recovery testing
 
-Would you like me to elaborate on any specific aspect of cybersecurity implementation?`;
+## **Security Tools Matrix**
+| Category | Tools | Purpose |
+|----------|-------|---------|
+| SIEM | Splunk, QRadar | Security monitoring |
+| EDR | CrowdStrike, SentinelOne | Endpoint protection |
+| Network | Palo Alto, Fortinet | Traffic filtering |
+| Identity | Okta, Azure AD | Access management |
+
+**Next Steps**: Would you like me to elaborate on any specific aspect of cybersecurity implementation?`;
         }
         
         if (message.includes('ai') || message.includes('artificial intelligence')) {

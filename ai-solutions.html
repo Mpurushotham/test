@@ -361,6 +361,232 @@
         </div>
     </section>
 
+    <!-- DevSecOps Automation Solutions -->
+    <section class="devsecops-automation">
+        <div class="container">
+            <div class="section-header">
+                <h2>DevSecOps Automation Solutions</h2>
+                <p>Comprehensive automation frameworks and scripts for multi-cloud DevSecOps implementation</p>
+            </div>
+
+            <div class="automation-categories">
+                <div class="automation-category">
+                    <h3><i class="fab fa-aws"></i> AWS DevSecOps Automation</h3>
+                    <div class="automation-grid">
+                        <div class="automation-card">
+                            <h4>Infrastructure as Code (Terraform)</h4>
+                            <p>Secure AWS infrastructure provisioning with automated security controls</p>
+                            <div class="code-snippet">
+                                <pre><code># AWS Security Group with least privilege
+resource "aws_security_group" "web_sg" {
+  name_prefix = "web-"
+  vpc_id      = var.vpc_id
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Environment = var.environment
+    SecurityLevel = "high"
+  }
+}</code></pre>
+                            </div>
+                            <button class="btn btn-outline" onclick="showAutomation('aws-terraform')">View Full Script</button>
+                        </div>
+
+                        <div class="automation-card">
+                            <h4>CI/CD Security Pipeline</h4>
+                            <p>GitHub Actions workflow with comprehensive security scanning</p>
+                            <div class="code-snippet">
+                                <pre><code>name: DevSecOps Pipeline
+on: [push, pull_request]
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+      - name: Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results.sarif'</code></pre>
+                            </div>
+                            <button class="btn btn-outline" onclick="showAutomation('aws-cicd')">View Full Script</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="automation-category">
+                    <h3><i class="fab fa-microsoft"></i> Azure DevSecOps Automation</h3>
+                    <div class="automation-grid">
+                        <div class="automation-card">
+                            <h4>Azure Policy as Code</h4>
+                            <p>Automated compliance and governance using Azure Policy</p>
+                            <div class="code-snippet">
+                                <pre><code># Azure Policy for encryption enforcement
+{
+  "if": {
+    "allOf": [
+      {
+        "field": "type",
+        "equals": "Microsoft.Storage/storageAccounts"
+      },
+      {
+        "field": "Microsoft.Storage/storageAccounts/encryption.services.blob.enabled",
+        "equals": "false"
+      }
+    ]
+  },
+  "then": {
+    "effect": "deny"
+  }
+}</code></pre>
+                            </div>
+                            <button class="btn btn-outline" onclick="showAutomation('azure-policy')">View Full Script</button>
+                        </div>
+
+                        <div class="automation-card">
+                            <h4>Azure Security Center Automation</h4>
+                            <p>Automated security recommendations and remediation</p>
+                            <div class="code-snippet">
+                                <pre><code># PowerShell script for automated remediation
+param(
+    [string]$ResourceGroupName,
+    [string]$SubscriptionId
+)
+
+# Connect to Azure
+Connect-AzAccount
+
+# Get security recommendations
+$recommendations = Get-AzSecurityRecommendation
+
+foreach ($rec in $recommendations) {
+    if ($rec.State -eq "Active") {
+        # Apply remediation
+        Invoke-AzSecurityRemediation -Name $rec.Name
+    }
+}</code></pre>
+                            </div>
+                            <button class="btn btn-outline" onclick="showAutomation('azure-security')">View Full Script</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="automation-category">
+                    <h3><i class="fab fa-google"></i> GCP DevSecOps Automation</h3>
+                    <div class="automation-grid">
+                        <div class="automation-card">
+                            <h4>Security Command Center Integration</h4>
+                            <p>Automated security findings and response using SCC API</p>
+                            <div class="code-snippet">
+                                <pre><code># Python script for SCC automation
+import google.cloud.securitycenter as securitycenter
+
+def create_finding(project_id, source_id, finding_id):
+    client = securitycenter.SecurityCenterClient()
+    
+    finding = {
+        "name": f"organizations/{org_id}/sources/{source_id}/findings/{finding_id}",
+        "state": "ACTIVE",
+        "resource_name": f"//compute.googleapis.com/projects/{project_id}/zones/us-central1-a/instances/example-instance",
+        "category": "PII_DATA_ACCESS",
+        "external_uri": "https://console.cloud.google.com/iam-admin/iam",
+        "severity": "HIGH",
+        "event_time": {"seconds": 1556753400},
+    }
+    
+    response = client.create_finding(
+        request={"parent": f"organizations/{org_id}/sources/{source_id}", "finding": finding}
+    )
+    return response</code></pre>
+                            </div>
+                            <button class="btn btn-outline" onclick="showAutomation('gcp-scc')">View Full Script</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Diagrams -->
+    <section class="architecture-diagrams">
+        <div class="container">
+            <div class="section-header">
+                <h2>Cybersecurity Architecture Blueprints</h2>
+                <p>Proven architecture diagrams and solutions for cloud and on-premise environments</p>
+            </div>
+
+            <div class="architecture-grid">
+                <div class="arch-card">
+                    <div class="arch-image">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="arch-content">
+                        <h3>Zero Trust Architecture</h3>
+                        <p>Comprehensive zero-trust implementation for modern enterprises</p>
+                        <div class="arch-tags">
+                            <span class="tag">Zero Trust</span>
+                            <span class="tag">Identity</span>
+                            <span class="tag">Network</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="showArchitecture('zero-trust')">View Architecture</button>
+                    </div>
+                </div>
+
+                <div class="arch-card">
+                    <div class="arch-image">
+                        <i class="fas fa-cloud"></i>
+                    </div>
+                    <div class="arch-content">
+                        <h3>Cloud Security Framework</h3>
+                        <p>Multi-cloud security architecture with unified management</p>
+                        <div class="arch-tags">
+                            <span class="tag">Multi-Cloud</span>
+                            <span class="tag">CSPM</span>
+                            <span class="tag">CASB</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="showArchitecture('cloud-security')">View Architecture</button>
+                    </div>
+                </div>
+
+                <div class="arch-card">
+                    <div class="arch-image">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <div class="arch-content">
+                        <h3>Data Protection Architecture</h3>
+                        <p>End-to-end data encryption and privacy protection</p>
+                        <div class="arch-tags">
+                            <span class="tag">Encryption</span>
+                            <span class="tag">Privacy</span>
+                            <span class="tag">Compliance</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="showArchitecture('data-protection')">View Architecture</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Cyber Attack Database -->
     <section id="attacks" class="attack-database">
         <div class="container">
@@ -663,320 +889,3 @@
         </div>
     </section>
 
-    <!-- DevSecOps Automation Solutions -->
-    <section class="devsecops-automation">
-        <div class="container">
-            <div class="section-header">
-                <h2>DevSecOps Automation Solutions</h2>
-                <p>Comprehensive automation frameworks and scripts for multi-cloud DevSecOps implementation</p>
-            </div>
-
-            <div class="automation-categories">
-                <div class="automation-category">
-                    <h3><i class="fab fa-aws"></i> AWS DevSecOps Automation</h3>
-                    <div class="automation-grid">
-                        <div class="automation-card">
-                            <h4>Infrastructure as Code (Terraform)</h4>
-                            <p>Secure AWS infrastructure provisioning with automated security controls</p>
-                            <div class="code-snippet">
-                                <pre><code># AWS Security Group with least privilege
-resource "aws_security_group" "web_sg" {
-  name_prefix = "web-"
-  vpc_id      = var.vpc_id
-
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Environment = var.environment
-    SecurityLevel = "high"
-  }
-}</code></pre>
-                            </div>
-                            <button class="btn btn-outline" onclick="showAutomation('aws-terraform')">View Full Script</button>
-                        </div>
-
-                        <div class="automation-card">
-                            <h4>CI/CD Security Pipeline</h4>
-                            <p>GitHub Actions workflow with comprehensive security scanning</p>
-                            <div class="code-snippet">
-                                <pre><code>name: DevSecOps Pipeline
-on: [push, pull_request]
-
-jobs:
-  security-scan:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-      - name: Upload Trivy scan results
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: 'trivy-results.sarif'</code></pre>
-                            </div>
-                            <button class="btn btn-outline" onclick="showAutomation('aws-cicd')">View Full Script</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="automation-category">
-                    <h3><i class="fab fa-microsoft"></i> Azure DevSecOps Automation</h3>
-                    <div class="automation-grid">
-                        <div class="automation-card">
-                            <h4>Azure Policy as Code</h4>
-                            <p>Automated compliance and governance using Azure Policy</p>
-                            <div class="code-snippet">
-                                <pre><code># Azure Policy for encryption enforcement
-{
-  "if": {
-    "allOf": [
-      {
-        "field": "type",
-        "equals": "Microsoft.Storage/storageAccounts"
-      },
-      {
-        "field": "Microsoft.Storage/storageAccounts/encryption.services.blob.enabled",
-        "equals": "false"
-      }
-    ]
-  },
-  "then": {
-    "effect": "deny"
-  }
-}</code></pre>
-                            </div>
-                            <button class="btn btn-outline" onclick="showAutomation('azure-policy')">View Full Script</button>
-                        </div>
-
-                        <div class="automation-card">
-                            <h4>Azure Security Center Automation</h4>
-                            <p>Automated security recommendations and remediation</p>
-                            <div class="code-snippet">
-                                <pre><code># PowerShell script for automated remediation
-param(
-    [string]$ResourceGroupName,
-    [string]$SubscriptionId
-)
-
-# Connect to Azure
-Connect-AzAccount
-
-# Get security recommendations
-$recommendations = Get-AzSecurityRecommendation
-
-foreach ($rec in $recommendations) {
-    if ($rec.State -eq "Active") {
-        # Apply remediation
-        Invoke-AzSecurityRemediation -Name $rec.Name
-    }
-}</code></pre>
-                            </div>
-                            <button class="btn btn-outline" onclick="showAutomation('azure-security')">View Full Script</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="automation-category">
-                    <h3><i class="fab fa-google"></i> GCP DevSecOps Automation</h3>
-                    <div class="automation-grid">
-                        <div class="automation-card">
-                            <h4>Security Command Center Integration</h4>
-                            <p>Automated security findings and response using SCC API</p>
-                            <div class="code-snippet">
-                                <pre><code># Python script for SCC automation
-import google.cloud.securitycenter as securitycenter
-
-def create_finding(project_id, source_id, finding_id):
-    client = securitycenter.SecurityCenterClient()
-    
-    finding = {
-        "name": f"organizations/{org_id}/sources/{source_id}/findings/{finding_id}",
-        "state": "ACTIVE",
-        "resource_name": f"//compute.googleapis.com/projects/{project_id}/zones/us-central1-a/instances/example-instance",
-        "category": "PII_DATA_ACCESS",
-        "external_uri": "https://console.cloud.google.com/iam-admin/iam",
-        "severity": "HIGH",
-        "event_time": {"seconds": 1556753400},
-    }
-    
-    response = client.create_finding(
-        request={"parent": f"organizations/{org_id}/sources/{source_id}", "finding": finding}
-    )
-    return response</code></pre>
-                            </div>
-                            <button class="btn btn-outline" onclick="showAutomation('gcp-scc')">View Full Script</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Architecture Diagrams -->
-    <section class="architecture-diagrams">
-        <div class="container">
-            <div class="section-header">
-                <h2>Cybersecurity Architecture Blueprints</h2>
-                <p>Proven architecture diagrams and solutions for cloud and on-premise environments</p>
-            </div>
-
-            <div class="architecture-grid">
-                <div class="arch-card">
-                    <div class="arch-image">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <h3>Zero Trust Architecture</h3>
-                    <p>Comprehensive zero trust implementation for modern enterprises</p>
-                    <div class="arch-tags">
-                        <span class="tag">Identity</span>
-                        <span class="tag">Network</span>
-                        <span class="tag">Data</span>
-                    </div>
-                    <button class="btn btn-primary" onclick="showArchitecture('zero-trust')">View Architecture</button>
-                </div>
-
-                <div class="arch-card">
-                    <div class="arch-image">
-                        <i class="fas fa-cloud"></i>
-                    </div>
-                    <h3>Cloud Security Framework</h3>
-                    <p>Multi-cloud security architecture with shared responsibility model</p>
-                    <div class="arch-tags">
-                        <span class="tag">AWS</span>
-                        <span class="tag">Azure</span>
-                        <span class="tag">GCP</span>
-                    </div>
-                    <button class="btn btn-primary" onclick="showArchitecture('cloud-security')">View Architecture</button>
-                </div>
-
-                <div class="arch-card">
-                    <div class="arch-image">
-                        <i class="fas fa-network-wired"></i>
-                    </div>
-                    <h3>Network Segmentation</h3>
-                    <p>Advanced network segmentation and micro-segmentation strategies</p>
-                    <div class="arch-tags">
-                        <span class="tag">VLAN</span>
-                        <span class="tag">SDN</span>
-                        <span class="tag">Firewall</span>
-                    </div>
-                    <button class="btn btn-primary" onclick="showArchitecture('network-seg')">View Architecture</button>
-                </div>
-
-                <div class="arch-card">
-                    <div class="arch-image">
-                        <i class="fas fa-database"></i>
-                    </div>
-                    <h3>Data Center Security</h3>
-                    <p>On-premise data center security and compliance architecture</p>
-                    <div class="arch-tags">
-                        <span class="tag">Physical</span>
-                        <span class="tag">Logical</span>
-                        <span class="tag">Compliance</span>
-                    </div>
-                    <button class="btn btn-primary" onclick="showArchitecture('datacenter')">View Architecture</button>
-                </div>
-
-                <div class="arch-card">
-                    <div class="arch-image">
-                        <i class="fas fa-mobile-alt"></i>
-                    </div>
-                    <h3>Mobile Security</h3>
-                    <p>Mobile device management and security architecture</p>
-                    <div class="arch-tags">
-                        <span class="tag">MDM</span>
-                        <span class="tag">BYOD</span>
-                        <span class="tag">App Security</span>
-                    </div>
-                    <button class="btn btn-primary" onclick="showArchitecture('mobile-security')">View Architecture</button>
-                </div>
-
-                <div class="arch-card">
-                    <div class="arch-image">
-                        <i class="fas fa-industry"></i>
-                    </div>
-                    <h3>Industrial Security</h3>
-                    <p>OT/IT convergence and industrial control system security</p>
-                    <div class="arch-tags">
-                        <span class="tag">OT</span>
-                        <span class="tag">SCADA</span>
-                        <span class="tag">Air Gap</span>
-                    </div>
-                    <button class="btn btn-primary" onclick="showArchitecture('industrial')">View Architecture</button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Solution Modal -->
-    <div id="solutionModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <div id="solutionContent"></div>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>CyberTarget<span class="logo-cloud">.cloud</span></h3>
-                    <p>Professional technology solutions and AI-powered search capabilities for modern businesses.</p>
-                    <div class="social-links">
-                        <a href="https://linkedin.com/in/mpurushotham" target="_blank"><i class="fab fa-linkedin"></i></a>
-                        <a href="https://github.com/mpurushotham" target="_blank"><i class="fab fa-github"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                    </div>
-                </div>
-                <div class="footer-section">
-                    <h4>Services</h4>
-                    <ul>
-                        <li><a href="index.html#services">Cybersecurity</a></li>
-                        <li><a href="index.html#services">AI Solutions</a></li>
-                        <li><a href="index.html#services">Cloud Services</a></li>
-                        <li><a href="index.html#services">Custom Development</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Resources</h4>
-                    <ul>
-                        <li><a href="index.html#blogs">Tech Blogs</a></li>
-                        <li><a href="index.html#search">AI Search</a></li>
-                        <li><a href="askuniversal.html">AskUniversal AI</a></li>
-                        <li><a href="ai-solutions.html">AI@Solutions</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Contact Info</h4>
-                    <p>Email: info@cybertarget.cloud</p>
-                    <p>Phone: +1 (555) 123-4567</p>
-                    <p>Domain: cybertarget.cloud</p>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2024 CyberTarget. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <script src="ai-solutions.js"></script>
-</body>
-</html>

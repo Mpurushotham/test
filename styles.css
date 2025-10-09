@@ -2363,6 +2363,40 @@ blockquote {
     }
 }
 
+/* AI Model Selection */
+.ai-model-selection {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.ai-model-selection label {
+    display: block;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+}
+
+.ai-model-select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    background: white;
+    font-size: 1rem;
+    color: #475569;
+    transition: all 0.3s ease;
+}
+
+.ai-model-select:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
 /* Auto-suggestions and Query Buttons */
 .auto-suggestions {
     position: absolute;

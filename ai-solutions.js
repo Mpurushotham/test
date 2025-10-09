@@ -554,6 +554,869 @@ function closeModal() {
     document.getElementById('solutionModal').style.display = 'none';
 }
 
+// Show automation script
+function showAutomation(automationId) {
+    const automationScripts = {
+        'aws-terraform': {
+            title: 'AWS Terraform Security Configuration',
+            content: `# Complete AWS Security Infrastructure with Terraform
+
+# Variables
+variable "environment" {
+  description = "Environment name"
+  type        = string
+  default     = "production"
+}
+
+variable "vpc_id" {
+  description = "VPC ID"
+  type        = string
+}
+
+# Security Groups
+resource "aws_security_group" "web_sg" {
+  name_prefix = "web-"
+  vpc_id      = var.vpc_id
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Environment = var.environment
+    SecurityLevel = "high"
+    Name = "Web Security Group"
+  }
+}
+
+# IAM Role for EC2 instances
+resource "aws_iam_role" "ec2_role" {
+  name = "ec2-security-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+# Attach security policies
+resource "aws_iam_role_policy_attachment" "ssm_policy" {
+  role       = aws_iam_role.ec2_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+# CloudTrail for audit logging
+resource "aws_cloudtrail" "security_trail" {
+  name                          = "security-audit-trail"
+  s3_bucket_name                = aws_s3_bucket.cloudtrail_bucket.id
+  include_global_service_events = true
+  is_multi_region_trail         = true
+  enable_logging                = true
+}
+
+# S3 bucket for CloudTrail
+resource "aws_s3_bucket" "cloudtrail_bucket" {
+  bucket = "security-cloudtrail-${random_id.bucket_suffix.hex}"
+}
+
+resource "random_id" "bucket_suffix" {
+  byte_length = 4
+}
+
+# S3 bucket policy for CloudTrail
+resource "aws_s3_bucket_policy" "cloudtrail_policy" {
+  bucket = aws_s3_bucket.cloudtrail_bucket.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "AWSCloudTrailAclCheck"
+        Effect = "Allow"
+        Principal = {
+          Service = "cloudtrail.amazonaws.com"
+        }
+        Action   = "s3:GetBucketAcl"
+        Resource = aws_s3_bucket.cloudtrail_bucket.arn
+      },
+      {
+        Sid    = "AWSCloudTrailWrite"
+        Effect = "Allow"
+        Principal = {
+          Service = "cloudtrail.amazonaws.com"
+        }
+        Action   = "s3:PutObject"
+        Resource = "${aws_s3_bucket.cloudtrail_bucket.arn}/*"
+        Condition = {
+          StringEquals = {
+            "s3:x-amz-acl" = "bucket-owner-full-control"
+          }
+        }
+      }
+    ]
+  })
+}
+
+# GuardDuty for threat detection
+resource "aws_guardduty_detector" "main" {
+  enable = true
+}
+
+# Config for compliance monitoring
+resource "aws_config_configuration_recorder" "main" {
+  name     = "security-config-recorder"
+  role_arn = aws_iam_role.config_role.arn
+}
+
+resource "aws_iam_role" "config_role" {
+  name = "config-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "config.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "config_policy" {
+  role       = aws_iam_role.config_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/ConfigRole"
+}
+
+# Outputs
+output "security_group_id" {
+  value = aws_security_group.web_sg.id
+}
+
+output "cloudtrail_arn" {
+  value = aws_cloudtrail.security_trail.arn
+}
+
+output "guardduty_detector_id" {
+  value = aws_guardduty_detector.main.id
+}`
+        },
+        'aws-cicd': {
+            title: 'GitHub Actions DevSecOps Pipeline',
+            content: `# Complete DevSecOps CI/CD Pipeline
+
+name: DevSecOps Security Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    # SAST - Static Application Security Testing
+    - name: Run Semgrep SAST
+      uses: returntocorp/semgrep-action@v1
+      with:
+        config: >-
+          p/security-audit
+          p/secrets
+          p/owasp-top-ten
+          p/security-audit
+        generateSarif: "1"
+        output: "semgrep-results.sarif"
+
+    - name: Upload Semgrep results
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: "semgrep-results.sarif"
+
+    # Dependency vulnerability scanning
+    - name: Run npm audit
+      run: |
+        npm audit --audit-level moderate --json > npm-audit.json || true
+        if [ -s npm-audit.json ]; then
+          echo "Vulnerabilities found in dependencies"
+          cat npm-audit.json
+        fi
+
+    # Container image scanning
+    - name: Build Docker image
+      run: |
+        docker build -t $ECR_REGISTRY/${{ github.repository }}:${{ github.sha }} .
+        docker tag $ECR_REGISTRY/${{ github.repository }}:${{ github.sha }} $ECR_REGISTRY/${{ github.repository }}:latest
+
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: '$ECR_REGISTRY/${{ github.repository }}:${{ github.sha }}'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+
+    - name: Upload Trivy scan results
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+    # Infrastructure scanning
+    - name: Run Checkov
+      uses: bridgecrewio/checkov-action@master
+      with:
+        directory: .
+        framework: terraform
+        output_format: sarif
+        output_file_path: checkov-results.sarif
+
+    - name: Upload Checkov results
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: 'checkov-results.sarif'
+
+  deploy:
+    needs: security-scan
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+    - name: Build and push image
+      run: |
+        docker build -t $ECR_REGISTRY/${{ github.repository }}:${{ github.sha }} .
+        docker push $ECR_REGISTRY/${{ github.repository }}:${{ github.sha }}
+        docker push $ECR_REGISTRY/${{ github.repository }}:latest
+
+    - name: Deploy to ECS
+      run: |
+        aws ecs update-service \
+          --cluster ${{ secrets.ECS_CLUSTER }} \
+          --service ${{ secrets.ECS_SERVICE }} \
+          --force-new-deployment
+
+  security-notifications:
+    needs: [security-scan, deploy]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+    - name: Security Scan Results
+      run: |
+        echo "Security scan completed with status: ${{ needs.security-scan.result }}"
+        echo "Deployment completed with status: ${{ needs.deploy.result }}"
+        
+        if [ "${{ needs.security-scan.result }}" != "success" ]; then
+          echo "Security scan failed - check the Security tab for details"
+        fi`
+        },
+        'azure-policy': {
+            title: 'Azure Policy as Code',
+            content: `# Azure Policy as Code for Security Compliance
+
+# Policy Definition for Storage Account Encryption
+resource "azurerm_policy_definition" "storage_encryption" {
+  name         = "storage-encryption-policy"
+  policy_type  = "Custom"
+  mode         = "Indexed"
+  display_name = "Storage Account Encryption Policy"
+  description  = "Ensures all storage accounts have encryption enabled"
+
+  policy_rule = jsonencode({
+    "if" = {
+      "allOf" = [
+        {
+          "field" = "type"
+          "equals" = "Microsoft.Storage/storageAccounts"
+        },
+        {
+          "field" = "Microsoft.Storage/storageAccounts/encryption.services.blob.enabled"
+          "equals" = "false"
+        }
+      ]
+    }
+    "then" = {
+      "effect" = "deny"
+    }
+  })
+}
+
+# Policy Assignment
+resource "azurerm_policy_assignment" "storage_encryption_assignment" {
+  name                 = "storage-encryption-assignment"
+  scope                = data.azurerm_subscription.current.id
+  policy_definition_id = azurerm_policy_definition.storage_encryption.id
+  description          = "Assignment of storage encryption policy"
+  display_name         = "Storage Encryption Assignment"
+}
+
+# Policy for Network Security Groups
+resource "azurerm_policy_definition" "nsg_rule_restriction" {
+  name         = "nsg-rule-restriction"
+  policy_type  = "Custom"
+  mode         = "Indexed"
+  display_name = "NSG Rule Restriction Policy"
+  description  = "Restricts certain NSG rules"
+
+  policy_rule = jsonencode({
+    "if" = {
+      "allOf" = [
+        {
+          "field" = "type"
+          "equals" = "Microsoft.Network/networkSecurityGroups"
+        },
+        {
+          "anyOf" = [
+            {
+              "field" = "Microsoft.Network/networkSecurityGroups/securityRules[*].access"
+              "equals" = "Allow"
+            },
+            {
+              "field" = "Microsoft.Network/networkSecurityGroups/securityRules[*].destinationPortRange"
+              "equals" = "*"
+            }
+          ]
+        }
+      ]
+    }
+    "then" = {
+      "effect" = "audit"
+    }
+  })
+}
+
+# Initiative for Security Baseline
+resource "azurerm_policy_set_definition" "security_baseline" {
+  name         = "security-baseline"
+  policy_type  = "Custom"
+  display_name = "Security Baseline Initiative"
+  description  = "Comprehensive security baseline for Azure resources"
+
+  policy_definition_reference {
+    policy_definition_id = azurerm_policy_definition.storage_encryption.id
+  }
+
+  policy_definition_reference {
+    policy_definition_id = azurerm_policy_definition.nsg_rule_restriction.id
+  }
+}
+
+# Assignment of the initiative
+resource "azurerm_policy_assignment" "security_baseline_assignment" {
+  name                 = "security-baseline-assignment"
+  scope                = data.azurerm_subscription.current.id
+  policy_definition_id = azurerm_policy_set_definition.security_baseline.id
+  description          = "Assignment of security baseline initiative"
+  display_name         = "Security Baseline Assignment"
+}
+
+# Data source for current subscription
+data "azurerm_subscription" "current" {}
+
+# Outputs
+output "policy_definition_id" {
+  value = azurerm_policy_definition.storage_encryption.id
+}
+
+output "initiative_id" {
+  value = azurerm_policy_set_definition.security_baseline.id
+}`
+        },
+        'azure-security': {
+            title: 'Azure Security Center Automation',
+            content: `# PowerShell script for Azure Security Center automation
+
+param(
+    [Parameter(Mandatory=$true)]
+    [string]$ResourceGroupName,
+    
+    [Parameter(Mandatory=$true)]
+    [string]$SubscriptionId,
+    
+    [string]$Location = "East US"
+)
+
+# Connect to Azure
+Write-Host "Connecting to Azure..." -ForegroundColor Green
+Connect-AzAccount
+
+# Set subscription context
+Set-AzContext -SubscriptionId $SubscriptionId
+
+# Function to get security recommendations
+function Get-SecurityRecommendations {
+    Write-Host "Fetching security recommendations..." -ForegroundColor Yellow
+    
+    $recommendations = Get-AzSecurityRecommendation | Where-Object {
+        $_.State -eq "Active" -and $_.Severity -in @("High", "Medium")
+    }
+    
+    return $recommendations
+}
+
+# Function to remediate security issues
+function Invoke-SecurityRemediation {
+    param($Recommendation)
+    
+    Write-Host "Remediating: $($Recommendation.DisplayName)" -ForegroundColor Cyan
+    
+    try {
+        # Apply remediation based on recommendation type
+        switch ($Recommendation.RecommendationType) {
+            "EnableEncryptionAtRest" {
+                # Enable encryption for storage accounts
+                $storageAccounts = Get-AzStorageAccount -ResourceGroupName $ResourceGroupName
+                foreach ($account in $storageAccounts) {
+                    Set-AzStorageAccount -ResourceGroupName $ResourceGroupName -Name $account.StorageAccountName -EnableEncryptionService Blob,File
+                }
+            }
+            "EnableNetworkSecurityGroup" {
+                # Create NSG for subnets without protection
+                $subnets = Get-AzVirtualNetwork | Get-AzVirtualNetworkSubnetConfig | Where-Object { -not $_.NetworkSecurityGroup }
+                foreach ($subnet in $subnets) {
+                    $nsg = New-AzNetworkSecurityGroup -ResourceGroupName $ResourceGroupName -Name "NSG-$($subnet.Name)" -Location $Location
+                    $subnet.NetworkSecurityGroup = $nsg
+                }
+            }
+            "EnableMFA" {
+                # Enable MFA for users (requires Azure AD Premium)
+                Write-Host "MFA should be enabled through Azure AD Conditional Access policies" -ForegroundColor Yellow
+            }
+            default {
+                Write-Host "No automated remediation available for: $($Recommendation.RecommendationType)" -ForegroundColor Red
+            }
+        }
+    }
+    catch {
+        Write-Error "Failed to remediate: $($_.Exception.Message)"
+    }
+}
+
+# Function to create security alerts
+function New-SecurityAlert {
+    param(
+        [string]$AlertName,
+        [string]$Description,
+        [string]$Severity = "Medium"
+    )
+    
+    $alertRule = @{
+        Name = $AlertName
+        ResourceGroupName = $ResourceGroupName
+        Location = $Location
+        Description = $Description
+        Severity = $Severity
+        Enabled = $true
+    }
+    
+    # Create action group for notifications
+    $actionGroup = New-AzActionGroup -ResourceGroupName $ResourceGroupName -Name "SecurityAlerts" -ShortName "SecAlert"
+    
+    # Add email action
+    $emailAction = New-AzActionGroupReceiver -Name "SecurityTeam" -EmailAddress "security@company.com"
+    Add-AzActionGroupReceiver -ResourceGroupName $ResourceGroupName -Name "SecurityAlerts" -Receiver $emailAction
+}
+
+# Function to enable Security Center features
+function Enable-SecurityCenterFeatures {
+    Write-Host "Enabling Security Center features..." -ForegroundColor Green
+    
+    # Enable Just-In-Time VM access
+    Set-AzJitNetworkAccessPolicy -ResourceGroupName $ResourceGroupName -Name "default" -Location $Location -VirtualMachine $vm.Id
+    
+    # Enable Adaptive Application Controls
+    $adaptiveApplicationControls = @{
+        ResourceGroupName = $ResourceGroupName
+        Location = $Location
+        GroupName = "Default"
+        ProtectionMode = "Audit"
+    }
+    
+    # Enable File Integrity Monitoring
+    $vm = Get-AzVM -ResourceGroupName $ResourceGroupName | Select-Object -First 1
+    if ($vm) {
+        Set-AzVMExtension -ResourceGroupName $ResourceGroupName -VMName $vm.Name -Name "AzureSecurityCenter" -Publisher "Microsoft.Azure.Security.Monitoring" -Type "AzureSecurityCenter" -TypeHandlerVersion "1.0"
+    }
+}
+
+# Main execution
+Write-Host "Starting Azure Security Center automation..." -ForegroundColor Green
+
+# Get security recommendations
+$recommendations = Get-SecurityRecommendations
+
+if ($recommendations.Count -gt 0) {
+    Write-Host "Found $($recommendations.Count) security recommendations" -ForegroundColor Yellow
+    
+    foreach ($rec in $recommendations) {
+        Write-Host "Processing: $($rec.DisplayName)" -ForegroundColor Cyan
+        Invoke-SecurityRemediation -Recommendation $rec
+    }
+} else {
+    Write-Host "No active security recommendations found" -ForegroundColor Green
+}
+
+# Enable Security Center features
+Enable-SecurityCenterFeatures
+
+# Create security alerts
+New-SecurityAlert -AlertName "HighSeverityThreats" -Description "Alert for high severity security threats" -Severity "High"
+New-SecurityAlert -AlertName "SuspiciousActivity" -Description "Alert for suspicious network activity" -Severity "Medium"
+
+Write-Host "Azure Security Center automation completed!" -ForegroundColor Green`
+        },
+        'gcp-scc': {
+            title: 'GCP Security Command Center Integration',
+            content: `# Python script for GCP Security Command Center automation
+
+import json
+import time
+from datetime import datetime, timedelta
+from google.cloud import securitycenter
+from google.cloud import asset
+from google.cloud import monitoring_v3
+from google.oauth2 import service_account
+
+class GCPSecurityAutomation:
+    def __init__(self, project_id, credentials_path=None):
+        self.project_id = project_id
+        self.org_id = f"organizations/{self.get_organization_id()}"
+        
+        # Initialize clients
+        if credentials_path:
+            credentials = service_account.Credentials.from_service_account_file(credentials_path)
+            self.scc_client = securitycenter.SecurityCenterClient(credentials=credentials)
+            self.asset_client = asset.AssetServiceClient(credentials=credentials)
+            self.monitoring_client = monitoring_v3.MetricServiceClient(credentials=credentials)
+        else:
+            self.scc_client = securitycenter.SecurityCenterClient()
+            self.asset_client = asset.AssetServiceClient()
+            self.monitoring_client = monitoring_v3.MetricServiceClient()
+
+    def get_organization_id(self):
+        """Get organization ID from project"""
+        # This would typically be retrieved from your organization
+        return "123456789012"  # Replace with actual org ID
+
+    def create_security_finding(self, source_id, finding_id, category, severity, description):
+        """Create a new security finding in SCC"""
+        finding = {
+            "name": f"{self.org_id}/sources/{source_id}/findings/{finding_id}",
+            "state": "ACTIVE",
+            "resource_name": f"//compute.googleapis.com/projects/{self.project_id}/zones/us-central1-a/instances/example-instance",
+            "category": category,
+            "external_uri": f"https://console.cloud.google.com/security/command-center/findings?project={self.project_id}",
+            "severity": severity,
+            "event_time": {"seconds": int(time.time())},
+            "source_properties": {
+                "description": description,
+                "detection_method": "Automated Script",
+                "confidence": "HIGH"
+            }
+        }
+        
+        try:
+            response = self.scc_client.create_finding(
+                request={
+                    "parent": f"{self.org_id}/sources/{source_id}",
+                    "finding": finding
+                }
+            )
+            print(f"Created finding: {response.name}")
+            return response
+        except Exception as e:
+            print(f"Error creating finding: {e}")
+            return None
+
+    def list_active_findings(self, source_id):
+        """List all active security findings"""
+        try:
+            findings = self.scc_client.list_findings(
+                request={
+                    "parent": f"{self.org_id}/sources/{source_id}",
+                    "filter": "state=\"ACTIVE\""
+                }
+            )
+            return list(findings)
+        except Exception as e:
+            print(f"Error listing findings: {e}")
+            return []
+
+    def remediate_finding(self, finding_name, remediation_action):
+        """Remediate a security finding"""
+        try:
+            # Update finding state to resolved
+            update_mask = {"paths": ["state"]}
+            finding = {"name": finding_name, "state": "RESOLVED"}
+            
+            response = self.scc_client.update_finding(
+                request={
+                    "finding": finding,
+                    "update_mask": update_mask
+                }
+            )
+            print(f"Remediated finding: {finding_name}")
+            return response
+        except Exception as e:
+            print(f"Error remediating finding: {e}")
+            return None
+
+    def create_security_policy(self, policy_name, description, rules):
+        """Create a security policy"""
+        policy = {
+            "display_name": policy_name,
+            "description": description,
+            "rules": rules
+        }
+        
+        try:
+            response = self.scc_client.create_policy(
+                request={
+                    "parent": self.org_id,
+                    "policy": policy
+                }
+            )
+            print(f"Created policy: {response.name}")
+            return response
+        except Exception as e:
+            print(f"Error creating policy: {e}")
+            return None
+
+    def scan_assets_for_vulnerabilities(self):
+        """Scan GCP assets for security vulnerabilities"""
+        try:
+            # List all assets
+            assets = self.asset_client.search_all_resources(
+                request={
+                    "scope": f"projects/{self.project_id}",
+                    "asset_types": ["compute.googleapis.com/Instance"]
+                }
+            )
+            
+            vulnerabilities = []
+            for asset in assets:
+                # Check for common security issues
+                if self.check_instance_security(asset):
+                    vulnerabilities.append({
+                        "asset": asset.name,
+                        "issue": "Instance without proper security configuration",
+                        "severity": "MEDIUM"
+                    })
+            
+            return vulnerabilities
+        except Exception as e:
+            print(f"Error scanning assets: {e}")
+            return []
+
+    def check_instance_security(self, asset):
+        """Check if an instance has proper security configuration"""
+        # This is a simplified check - in reality, you'd check various security settings
+        return True  # Placeholder
+
+    def create_security_metrics(self):
+        """Create custom security metrics in Cloud Monitoring"""
+        try:
+            # Create a custom metric for security findings
+            metric_descriptor = {
+                "type": "custom.googleapis.com/security/findings_count",
+                "display_name": "Security Findings Count",
+                "description": "Number of active security findings",
+                "metric_kind": "GAUGE",
+                "value_type": "INT64",
+                "labels": [
+                    {"key": "severity", "value_type": "STRING"},
+                    {"key": "category", "value_type": "STRING"}
+                ]
+            }
+            
+            response = self.monitoring_client.create_metric_descriptor(
+                request={
+                    "name": f"projects/{self.project_id}",
+                    "metric_descriptor": metric_descriptor
+                }
+            )
+            print(f"Created metric descriptor: {response.name}")
+            return response
+        except Exception as e:
+            print(f"Error creating metrics: {e}")
+            return None
+
+    def generate_security_report(self):
+        """Generate a comprehensive security report"""
+        report = {
+            "timestamp": datetime.now().isoformat(),
+            "project_id": self.project_id,
+            "findings": [],
+            "recommendations": []
+        }
+        
+        # Get all findings
+        findings = self.list_active_findings("default")
+        for finding in findings:
+            report["findings"].append({
+                "name": finding.name,
+                "category": finding.category,
+                "severity": finding.severity,
+                "state": finding.state
+            })
+        
+        # Generate recommendations
+        report["recommendations"] = [
+            "Enable Cloud Security Command Center Premium",
+            "Implement Security Health Analytics",
+            "Set up Event Threat Detection",
+            "Configure Web Security Scanner",
+            "Enable Container Threat Detection"
+        ]
+        
+        return report
+
+# Example usage
+def main():
+    project_id = "your-gcp-project-id"
+    automation = GCPSecurityAutomation(project_id)
+    
+    # Create a security finding
+    finding = automation.create_security_finding(
+        source_id="default",
+        finding_id="custom-finding-001",
+        category="PII_DATA_ACCESS",
+        severity="HIGH",
+        description="Potential PII data access detected"
+    )
+    
+    # Scan for vulnerabilities
+    vulnerabilities = automation.scan_assets_for_vulnerabilities()
+    print(f"Found {len(vulnerabilities)} potential vulnerabilities")
+    
+    # Generate security report
+    report = automation.generate_security_report()
+    print("Security Report:")
+    print(json.dumps(report, indent=2))
+    
+    # Create security metrics
+    automation.create_security_metrics()
+
+if __name__ == "__main__":
+    main()`
+        }
+    };
+
+    const automation = automationScripts[automationId];
+    if (!automation) return;
+
+    // Create modal content
+    const modalContent = `
+        <div class="modal-header">
+            <h2>${automation.title}</h2>
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="code-block">
+                <pre><code>${automation.content}</code></pre>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" onclick="downloadAutomation('${automationId}')">Download Script</button>
+            <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+        </div>
+    `;
+
+    // Update modal content
+    document.getElementById('solutionModal').innerHTML = modalContent;
+    document.getElementById('solutionModal').style.display = 'block';
+}
+
+// Download automation script
+function downloadAutomation(automationId) {
+    const automationScripts = {
+        'aws-terraform': 'AWS Terraform Security Configuration',
+        'aws-cicd': 'GitHub Actions DevSecOps Pipeline',
+        'azure-policy': 'Azure Policy as Code',
+        'azure-security': 'Azure Security Center Automation',
+        'gcp-scc': 'GCP Security Command Center Integration'
+    };
+
+    const title = automationScripts[automationId];
+    if (!title) return;
+
+    // Create download content
+    const content = document.querySelector('.code-block pre code').textContent;
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${automationId}-script.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
 // Download solution
 function downloadSolution(solutionId) {
     const solution = solutionDatabase[solutionId];
