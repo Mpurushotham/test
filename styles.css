@@ -1257,9 +1257,10 @@ html {
 
 .blog-post-body p {
     color: #475569;
-    line-height: 1.7;
-    margin-bottom: 1.5rem;
-    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    text-align: left;
 }
 
 .blog-post-body ul {
@@ -2258,5 +2259,161 @@ blockquote {
     
     .components-grid {
         grid-template-columns: 1fr;
+    }
+}
+
+/* DevSecOps Automation Styles */
+.devsecops-automation {
+    padding: 80px 0;
+    background-color: white;
+}
+
+.automation-categories {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.automation-category {
+    margin-bottom: 4rem;
+}
+
+.automation-category h3 {
+    color: #1e293b;
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.automation-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+}
+
+.automation-card {
+    background-color: #f8fafc;
+    border-radius: 12px;
+    padding: 2rem;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.automation-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.automation-card h4 {
+    color: #1e293b;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.automation-card p {
+    color: #64748b;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.code-snippet {
+    background-color: #1e293b;
+    border-radius: 8px;
+    margin: 1rem 0;
+    overflow: hidden;
+}
+
+.code-snippet pre {
+    background-color: #1e293b;
+    color: #e2e8f0;
+    padding: 1.5rem;
+    margin: 0;
+    overflow-x: auto;
+    font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    white-space: pre;
+}
+
+.code-snippet code {
+    background-color: transparent;
+    color: #e2e8f0;
+    padding: 0;
+    border-radius: 0;
+    font-family: inherit;
+    font-size: inherit;
+}
+
+/* Responsive Design for DevSecOps */
+@media (max-width: 768px) {
+    .automation-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .automation-card {
+        padding: 1.5rem;
+    }
+    
+    .code-snippet pre {
+        font-size: 0.8rem;
+        padding: 1rem;
+    }
+}
+
+/* Auto-suggestions and Query Buttons */
+.auto-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.suggestion-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #f1f5f9;
+    transition: background-color 0.2s ease;
+    font-size: 0.9rem;
+    color: #475569;
+}
+
+.suggestion-item:hover {
+    background-color: #f8fafc;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.query-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.query-buttons .btn {
+    flex: 1;
+    min-width: 150px;
+}
+
+@media (max-width: 768px) {
+    .query-buttons {
+        flex-direction: column;
+    }
+    
+    .query-buttons .btn {
+        flex: none;
+        width: 100%;
     }
 }

@@ -15,9 +15,9 @@
         <div class="nav-container">
             <div class="nav-logo">
                 <div class="logo-icon">
-                    <i class="fas fa-shield-alt"></i>
+                    <i class="fas fa-cloud"></i>
                 </div>
-                <h2>CyberTarget</h2>
+                <h2>CyberTarget<span class="logo-cloud">.cloud</span></h2>
             </div>
             <ul class="nav-menu">
                 <li class="nav-item">
@@ -374,9 +374,20 @@
                     <div class="timeline-year">2024</div>
                     <div class="attack-card">
                         <h4>Microsoft Exchange Server Attacks</h4>
-                        <p><strong>Attack Type:</strong> Zero-day exploits, Ransomware</p>
-                        <p><strong>Impact:</strong> 30,000+ organizations affected globally</p>
-                        <p><strong>Mitigation:</strong> Immediate patching, network segmentation, MFA implementation</p>
+                        <p><strong>When:</strong> January 2024 - Ongoing</p>
+                        <p><strong>Where:</strong> Global, targeting Microsoft Exchange servers</p>
+                        <p><strong>What:</strong> Multiple zero-day vulnerabilities (CVE-2024-21410, CVE-2024-21413) allowing remote code execution</p>
+                        <p><strong>Why:</strong> Financial gain, data theft, and espionage activities</p>
+                        <p><strong>Impact:</strong> 30,000+ organizations affected globally, including government agencies and Fortune 500 companies</p>
+                        <p><strong>Mitigation Steps:</strong></p>
+                        <ol>
+                            <li>Immediately apply Microsoft's emergency patches</li>
+                            <li>Implement network segmentation to isolate Exchange servers</li>
+                            <li>Enable multi-factor authentication for all Exchange accounts</li>
+                            <li>Deploy endpoint detection and response (EDR) solutions</li>
+                            <li>Conduct forensic analysis to check for compromise</li>
+                            <li>Update incident response procedures</li>
+                        </ol>
                         <div class="attack-tags">
                             <span class="tag critical">Critical</span>
                             <span class="tag">Zero-day</span>
@@ -652,6 +663,172 @@
         </div>
     </section>
 
+    <!-- DevSecOps Automation Solutions -->
+    <section class="devsecops-automation">
+        <div class="container">
+            <div class="section-header">
+                <h2>DevSecOps Automation Solutions</h2>
+                <p>Comprehensive automation frameworks and scripts for multi-cloud DevSecOps implementation</p>
+            </div>
+
+            <div class="automation-categories">
+                <div class="automation-category">
+                    <h3><i class="fab fa-aws"></i> AWS DevSecOps Automation</h3>
+                    <div class="automation-grid">
+                        <div class="automation-card">
+                            <h4>Infrastructure as Code (Terraform)</h4>
+                            <p>Secure AWS infrastructure provisioning with automated security controls</p>
+                            <div class="code-snippet">
+                                <pre><code># AWS Security Group with least privilege
+resource "aws_security_group" "web_sg" {
+  name_prefix = "web-"
+  vpc_id      = var.vpc_id
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Environment = var.environment
+    SecurityLevel = "high"
+  }
+}</code></pre>
+                            </div>
+                            <button class="btn btn-outline" onclick="showAutomation('aws-terraform')">View Full Script</button>
+                        </div>
+
+                        <div class="automation-card">
+                            <h4>CI/CD Security Pipeline</h4>
+                            <p>GitHub Actions workflow with comprehensive security scanning</p>
+                            <div class="code-snippet">
+                                <pre><code>name: DevSecOps Pipeline
+on: [push, pull_request]
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+      - name: Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results.sarif'</code></pre>
+                            </div>
+                            <button class="btn btn-outline" onclick="showAutomation('aws-cicd')">View Full Script</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="automation-category">
+                    <h3><i class="fab fa-microsoft"></i> Azure DevSecOps Automation</h3>
+                    <div class="automation-grid">
+                        <div class="automation-card">
+                            <h4>Azure Policy as Code</h4>
+                            <p>Automated compliance and governance using Azure Policy</p>
+                            <div class="code-snippet">
+                                <pre><code># Azure Policy for encryption enforcement
+{
+  "if": {
+    "allOf": [
+      {
+        "field": "type",
+        "equals": "Microsoft.Storage/storageAccounts"
+      },
+      {
+        "field": "Microsoft.Storage/storageAccounts/encryption.services.blob.enabled",
+        "equals": "false"
+      }
+    ]
+  },
+  "then": {
+    "effect": "deny"
+  }
+}</code></pre>
+                            </div>
+                            <button class="btn btn-outline" onclick="showAutomation('azure-policy')">View Full Script</button>
+                        </div>
+
+                        <div class="automation-card">
+                            <h4>Azure Security Center Automation</h4>
+                            <p>Automated security recommendations and remediation</p>
+                            <div class="code-snippet">
+                                <pre><code># PowerShell script for automated remediation
+param(
+    [string]$ResourceGroupName,
+    [string]$SubscriptionId
+)
+
+# Connect to Azure
+Connect-AzAccount
+
+# Get security recommendations
+$recommendations = Get-AzSecurityRecommendation
+
+foreach ($rec in $recommendations) {
+    if ($rec.State -eq "Active") {
+        # Apply remediation
+        Invoke-AzSecurityRemediation -Name $rec.Name
+    }
+}</code></pre>
+                            </div>
+                            <button class="btn btn-outline" onclick="showAutomation('azure-security')">View Full Script</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="automation-category">
+                    <h3><i class="fab fa-google"></i> GCP DevSecOps Automation</h3>
+                    <div class="automation-grid">
+                        <div class="automation-card">
+                            <h4>Security Command Center Integration</h4>
+                            <p>Automated security findings and response using SCC API</p>
+                            <div class="code-snippet">
+                                <pre><code># Python script for SCC automation
+import google.cloud.securitycenter as securitycenter
+
+def create_finding(project_id, source_id, finding_id):
+    client = securitycenter.SecurityCenterClient()
+    
+    finding = {
+        "name": f"organizations/{org_id}/sources/{source_id}/findings/{finding_id}",
+        "state": "ACTIVE",
+        "resource_name": f"//compute.googleapis.com/projects/{project_id}/zones/us-central1-a/instances/example-instance",
+        "category": "PII_DATA_ACCESS",
+        "external_uri": "https://console.cloud.google.com/iam-admin/iam",
+        "severity": "HIGH",
+        "event_time": {"seconds": 1556753400},
+    }
+    
+    response = client.create_finding(
+        request={"parent": f"organizations/{org_id}/sources/{source_id}", "finding": finding}
+    )
+    return response</code></pre>
+                            </div>
+                            <button class="btn btn-outline" onclick="showAutomation('gcp-scc')">View Full Script</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Architecture Diagrams -->
     <section class="architecture-diagrams">
         <div class="container">
@@ -761,12 +938,12 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3>CyberTarget</h3>
+                    <h3>CyberTarget<span class="logo-cloud">.cloud</span></h3>
                     <p>Professional technology solutions and AI-powered search capabilities for modern businesses.</p>
                     <div class="social-links">
-                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://linkedin.com/in/mpurushotham" target="_blank"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://github.com/mpurushotham" target="_blank"><i class="fab fa-github"></i></a>
                         <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-github"></i></a>
                     </div>
                 </div>
                 <div class="footer-section">

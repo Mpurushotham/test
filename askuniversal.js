@@ -90,6 +90,7 @@ class UniversalAI {
     setupQueryInterface() {
         const generateBtn = document.getElementById('generateSolution');
         const projectDescription = document.getElementById('projectDescription');
+        const clearBtn = document.getElementById('clearSelection');
         
         generateBtn.addEventListener('click', () => this.generateSolution());
         projectDescription.addEventListener('keypress', (e) => {
@@ -97,6 +98,18 @@ class UniversalAI {
                 this.generateSolution();
             }
         });
+        
+        // Add auto-suggestions
+        projectDescription.addEventListener('input', () => this.showAutoSuggestions());
+        projectDescription.addEventListener('focus', () => this.showAutoSuggestions());
+        projectDescription.addEventListener('blur', () => {
+            setTimeout(() => this.hideAutoSuggestions(), 200);
+        });
+        
+        // Clear selection functionality
+        if (clearBtn) {
+            clearBtn.addEventListener('click', () => this.clearSelection());
+        }
     }
 
     async generateSolution() {
@@ -754,6 +767,97 @@ app.post('/api/projects', [
     downloadSolution() {
         // This would typically generate a PDF
         alert('PDF download functionality would be implemented here. This would generate a comprehensive document with all the solution details.');
+    }
+
+    showAutoSuggestions() {
+        const query = document.getElementById('projectDescription').value.toLowerCase();
+        if (query.length < 2) {
+            this.hideAutoSuggestions();
+            return;
+        }
+
+        const suggestions = this.getAutoSuggestions(query);
+        if (suggestions.length > 0) {
+            this.displayAutoSuggestions(suggestions);
+        }
+    }
+
+    hideAutoSuggestions() {
+        const suggestionsDiv = document.getElementById('autoSuggestions');
+        if (suggestionsDiv) {
+            suggestionsDiv.remove();
+        }
+    }
+
+    getAutoSuggestions(query) {
+        const allSuggestions = [
+            'Build a microservices architecture with Docker and Kubernetes',
+            'Implement CI/CD pipeline with GitHub Actions and Azure DevOps',
+            'Create a secure web application with authentication and authorization',
+            'Set up monitoring and logging with Prometheus and Grafana',
+            'Implement infrastructure as code using Terraform',
+            'Build a scalable API with rate limiting and caching',
+            'Create a data analytics platform with real-time processing',
+            'Implement machine learning pipeline with MLOps practices',
+            'Build a mobile app with React Native and backend API',
+            'Create a serverless application with AWS Lambda or Azure Functions',
+            'Implement blockchain solution with smart contracts',
+            'Build a real-time chat application with WebSockets',
+            'Create a content management system with headless architecture',
+            'Implement IoT solution with device management and analytics',
+            'Build a financial application with compliance and security'
+        ];
+
+        return allSuggestions.filter(suggestion => 
+            suggestion.toLowerCase().includes(query)
+        ).slice(0, 5);
+    }
+
+    displayAutoSuggestions(suggestions) {
+        this.hideAutoSuggestions(); // Remove existing suggestions
+
+        const suggestionsDiv = document.createElement('div');
+        suggestionsDiv.id = 'autoSuggestions';
+        suggestionsDiv.className = 'auto-suggestions';
+        
+        suggestionsDiv.innerHTML = suggestions.map(suggestion => 
+            `<div class="suggestion-item" onclick="window.universalAI.selectSuggestion('${suggestion}')">${suggestion}</div>`
+        ).join('');
+
+        const projectDescription = document.getElementById('projectDescription');
+        projectDescription.parentNode.insertBefore(suggestionsDiv, projectDescription.nextSibling);
+    }
+
+    selectSuggestion(suggestion) {
+        document.getElementById('projectDescription').value = suggestion;
+        this.hideAutoSuggestions();
+    }
+
+    clearSelection() {
+        // Clear all selected technologies
+        this.selectedTechnologies = {
+            languages: [],
+            frontend: [],
+            backend: [],
+            aws: [],
+            azure: [],
+            gcp: [],
+            oci: []
+        };
+
+        // Remove selected class from all tech options
+        document.querySelectorAll('.tech-option.selected').forEach(option => {
+            option.classList.remove('selected');
+        });
+
+        // Clear project description
+        document.getElementById('projectDescription').value = '';
+
+        // Update selected tech list
+        this.updateSelectedTechList();
+
+        // Hide any suggestions
+        this.hideAutoSuggestions();
     }
 }
 
