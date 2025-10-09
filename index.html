@@ -15,9 +15,9 @@
         <div class="nav-container">
             <div class="nav-logo">
                 <div class="logo-icon">
-                    <i class="fas fa-shield-alt"></i>
+                    <i class="fas fa-cloud"></i>
                 </div>
-                <h2>CyberTarget</h2>
+                <h2>CyberTarget<span class="logo-cloud">.cloud</span></h2>
             </div>
             <ul class="nav-menu">
                 <li class="nav-item">
@@ -83,12 +83,18 @@
                 <div class="model-selection">
                     <label for="aiModel">Select AI Model:</label>
                     <select id="aiModel" class="model-select">
-                        <option value="gpt-4">GPT-4 (OpenAI)</option>
-                        <option value="gpt-3.5-turbo">GPT-3.5 Turbo (OpenAI)</option>
-                        <option value="claude-3">Claude 3 (Anthropic)</option>
-                        <option value="gemini-pro">Gemini Pro (Google)</option>
-                        <option value="llama-2">Llama 2 (Meta)</option>
-                        <option value="palm-2">PaLM 2 (Google)</option>
+                        <option value="gpt-4">GPT-4 (OpenAI) - Premium</option>
+                        <option value="gpt-3.5-turbo">GPT-3.5 Turbo (OpenAI) - Free</option>
+                        <option value="claude-3">Claude 3 (Anthropic) - Free</option>
+                        <option value="gemini-pro">Gemini Pro (Google) - Free</option>
+                        <option value="llama-2">Llama 2 (Meta) - Free</option>
+                        <option value="palm-2">PaLM 2 (Google) - Free</option>
+                        <option value="mistral-7b">Mistral 7B (Mistral AI) - Free</option>
+                        <option value="codellama">Code Llama (Meta) - Free</option>
+                        <option value="vicuna">Vicuna (LMSYS) - Free</option>
+                        <option value="wizardcoder">WizardCoder (WizardLM) - Free</option>
+                        <option value="starcoder">StarCoder (Hugging Face) - Free</option>
+                        <option value="deepseek-coder">DeepSeek Coder - Free</option>
                     </select>
                 </div>
 
@@ -105,6 +111,9 @@
                             <input type="text" id="searchInput" placeholder="Ask me anything about technology, cybersecurity, or business solutions...">
                             <button id="searchBtn" class="search-btn">
                                 <i class="fas fa-paper-plane"></i>
+                            </button>
+                            <button id="clearChatBtn" class="clear-btn" title="Clear Chat">
+                                <i class="fas fa-trash"></i>
                             </button>
                         </div>
                         <div id="promptSuggestions" class="prompt-suggestions"></div>

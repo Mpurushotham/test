@@ -65,6 +65,12 @@ class EnhancedAISearch {
             }
         });
         
+        // Clear chat functionality
+        const clearChatBtn = document.getElementById('clearChatBtn');
+        if (clearChatBtn) {
+            clearChatBtn.addEventListener('click', () => this.clearChat());
+        }
+        
         // File upload handling
         this.fileInput.addEventListener('change', (e) => this.handleFileUpload(e));
         this.fileUploadArea.addEventListener('click', () => this.fileInput.click());
@@ -82,10 +88,16 @@ class EnhancedAISearch {
 
     async sendMessage() {
         const message = this.searchInput.value.trim();
-        if (!message || this.isLoading) return;
+        const hasFiles = this.uploadedFiles.length > 0;
+        
+        if (!message && !hasFiles || this.isLoading) return;
 
         // Add user message to chat
-        this.addMessage('user', message);
+        const userMessage = hasFiles ? 
+            `${message} ${message ? '' : 'Please analyze the uploaded files.'} [Files: ${this.uploadedFiles.map(f => f.name).join(', ')}]` : 
+            message;
+        
+        this.addMessage('user', userMessage);
         this.searchInput.value = '';
         this.hidePromptSuggestions();
         
@@ -98,7 +110,7 @@ class EnhancedAISearch {
         
         try {
             // Simulate AI response
-            const response = await this.getAIResponse(message);
+            const response = await this.getAIResponse(message, hasFiles);
             this.removeLoadingMessage(loadingId);
             this.addMessage('assistant', response);
             
@@ -109,6 +121,23 @@ class EnhancedAISearch {
             this.removeLoadingMessage(loadingId);
             this.addMessage('assistant', 'Sorry, I encountered an error processing your request. Please try again.');
         }
+    }
+
+    clearChat() {
+        this.chatMessages.innerHTML = '';
+        this.conversationHistory = [];
+        this.uploadedFiles = [];
+        this.searchInput.value = '';
+        this.hidePromptSuggestions();
+        
+        // Clear uploaded files display
+        const uploadedFilesDiv = this.fileUploadArea.querySelector('.uploaded-files');
+        if (uploadedFilesDiv) {
+            uploadedFilesDiv.remove();
+        }
+        
+        // Hide chat interface
+        this.chatMessages.classList.remove('show');
     }
 
     addMessage(type, content) {
@@ -181,7 +210,7 @@ class EnhancedAISearch {
             .replace(/\n/g, '<br>');
     }
 
-    async getAIResponse(message) {
+    async getAIResponse(message, hasFiles = false) {
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 2000));
         
@@ -189,24 +218,30 @@ class EnhancedAISearch {
         const lowerMessage = message.toLowerCase();
         
         // Generate contextual responses based on model and query
-        let response = this.generateContextualResponse(lowerMessage, selectedModel);
+        let response = this.generateContextualResponse(lowerMessage, selectedModel, hasFiles);
         
         // Add file context if files are uploaded
-        if (this.uploadedFiles.length > 0) {
+        if (hasFiles) {
             response += this.generateFileContext();
         }
         
         return response;
     }
 
-    generateContextualResponse(message, model) {
+    generateContextualResponse(message, model, hasFiles = false) {
         const responses = {
-            'gpt-4': this.getGPT4Response(message),
-            'gpt-3.5-turbo': this.getGPT35Response(message),
-            'claude-3': this.getClaudeResponse(message),
-            'gemini-pro': this.getGeminiResponse(message),
-            'llama-2': this.getLlamaResponse(message),
-            'palm-2': this.getPaLMResponse(message)
+            'gpt-4': this.getGPT4Response(message, hasFiles),
+            'gpt-3.5-turbo': this.getGPT35Response(message, hasFiles),
+            'claude-3': this.getClaudeResponse(message, hasFiles),
+            'gemini-pro': this.getGeminiResponse(message, hasFiles),
+            'llama-2': this.getLlamaResponse(message, hasFiles),
+            'palm-2': this.getPaLMResponse(message, hasFiles),
+            'mistral-7b': this.getMistralResponse(message, hasFiles),
+            'codellama': this.getCodeLlamaResponse(message, hasFiles),
+            'vicuna': this.getVicunaResponse(message, hasFiles),
+            'wizardcoder': this.getWizardCoderResponse(message, hasFiles),
+            'starcoder': this.getStarCoderResponse(message, hasFiles),
+            'deepseek-coder': this.getDeepSeekResponse(message, hasFiles)
         };
         
         return responses[model] || responses['gpt-4'];
@@ -385,7 +420,7 @@ For "${message}", here's my analysis:
 What's your experience level with open source technologies?`;
     }
 
-    getPaLMResponse(message) {
+    getPaLMResponse(message, hasFiles = false) {
         return `**Google AI Perspective (PaLM 2)**
 
 Regarding "${message}":
@@ -409,6 +444,162 @@ Regarding "${message}":
 4. **Innovation**: Advanced features
 
 Are you currently using any Google Cloud services?`;
+    }
+
+    getMistralResponse(message, hasFiles = false) {
+        return `**Efficient AI Analysis (Mistral 7B)**
+
+For "${message}", here's my analysis:
+
+**Mistral AI Advantages:**
+• Fast inference and low latency
+• Cost-effective for high-volume usage
+• Strong performance on code generation
+• Multilingual capabilities
+
+**Key Insights:**
+• Focus on practical implementation
+• Consider performance vs. cost trade-offs
+• Leverage open-source ecosystem
+• Optimize for your specific use case
+
+**Recommended Approach:**
+1. **Quick Start**: Rapid prototyping and testing
+2. **Iteration**: Fast feedback loops
+3. **Optimization**: Performance tuning
+4. **Scale**: Production deployment
+
+What's your primary use case for this solution?`;
+    }
+
+    getCodeLlamaResponse(message, hasFiles = false) {
+        return `**Code-Focused Analysis (Code Llama)**
+
+Regarding "${message}":
+
+**Code Llama Strengths:**
+• Specialized for code generation and understanding
+• Support for multiple programming languages
+• Code completion and debugging assistance
+• Integration with development workflows
+
+**Code Generation Capabilities:**
+• Python, JavaScript, Java, C++, and more
+• Documentation generation
+• Code review and optimization
+• Test case generation
+
+**Implementation Strategy:**
+1. **Code Analysis**: Review existing codebase
+2. **Generation**: Create new code components
+3. **Testing**: Generate test cases
+4. **Documentation**: Auto-generate docs
+
+Would you like me to generate specific code examples?`;
+    }
+
+    getVicunaResponse(message, hasFiles = false) {
+        return `**Open Source AI Analysis (Vicuna)**
+
+For "${message}":
+
+**Vicuna Advantages:**
+• Open-source and freely available
+• Strong conversational abilities
+• Good performance on various tasks
+• Community-driven development
+
+**Key Features:**
+• Natural language understanding
+• Context-aware responses
+• Multilingual support
+• Customizable and extensible
+
+**Implementation Approach:**
+1. **Setup**: Deploy Vicuna model
+2. **Configuration**: Customize for your needs
+3. **Integration**: Connect to your systems
+4. **Monitoring**: Track performance and usage
+
+What specific requirements do you have for this solution?`;
+    }
+
+    getWizardCoderResponse(message, hasFiles = false) {
+        return `**Code Wizard Analysis (WizardCoder)**
+
+Regarding "${message}":
+
+**WizardCoder Specialization:**
+• Advanced code generation capabilities
+• Strong performance on programming tasks
+• Support for complex code structures
+• Integration with development tools
+
+**Code Generation Features:**
+• Multi-language support
+• Complex algorithm implementation
+• Code optimization suggestions
+• Bug fixing and debugging
+
+**Development Workflow:**
+1. **Requirements**: Understand the problem
+2. **Design**: Plan the solution architecture
+3. **Implementation**: Generate the code
+4. **Review**: Test and optimize
+
+Would you like me to generate specific code implementations?`;
+    }
+
+    getStarCoderResponse(message, hasFiles = false) {
+        return `**StarCoder Analysis (Hugging Face)**
+
+For "${message}":
+
+**StarCoder Capabilities:**
+• Large-scale code generation
+• GitHub-trained model
+• Multi-language programming support
+• Strong performance on coding tasks
+
+**Key Strengths:**
+• Extensive training on diverse codebases
+• Good understanding of programming patterns
+• Support for various frameworks
+• Integration with development environments
+
+**Implementation Strategy:**
+1. **Model Setup**: Deploy StarCoder
+2. **Context Preparation**: Prepare your requirements
+3. **Code Generation**: Generate solutions
+4. **Integration**: Incorporate into your workflow
+
+What programming languages or frameworks are you working with?`;
+    }
+
+    getDeepSeekResponse(message, hasFiles = false) {
+        return `**DeepSeek Coder Analysis**
+
+Regarding "${message}":
+
+**DeepSeek Coder Features:**
+• Specialized for code understanding and generation
+• Strong performance on complex programming tasks
+• Support for multiple programming languages
+• Advanced reasoning capabilities
+
+**Code Analysis Capabilities:**
+• Code comprehension and explanation
+• Bug detection and fixing
+• Performance optimization
+• Architecture recommendations
+
+**Development Process:**
+1. **Analysis**: Deep understanding of requirements
+2. **Planning**: Strategic solution design
+3. **Implementation**: High-quality code generation
+4. **Optimization**: Performance and maintainability
+
+What specific coding challenges are you facing?`;
     }
 
     generateFileContext() {
