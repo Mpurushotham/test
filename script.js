@@ -260,26 +260,232 @@ class EnhancedAISearch {
     }
 
     generateContextualResponse(message, model, hasFiles = false) {
+        // Analyze the user's query to provide more relevant responses
+        const queryAnalysis = this.analyzeQuery(message);
+        
         const responses = {
-            'gpt-4': this.getGPT4Response(message, hasFiles),
-            'gpt-3.5-turbo': this.getGPT35Response(message, hasFiles),
-            'claude-3': this.getClaudeResponse(message, hasFiles),
-            'gemini-pro': this.getGeminiResponse(message, hasFiles),
-            'llama-2': this.getLlamaResponse(message, hasFiles),
-            'palm-2': this.getPaLMResponse(message, hasFiles),
-            'mistral-7b': this.getMistralResponse(message, hasFiles),
-            'codellama': this.getCodeLlamaResponse(message, hasFiles),
-            'vicuna': this.getVicunaResponse(message, hasFiles),
-            'wizardcoder': this.getWizardCoderResponse(message, hasFiles),
-            'starcoder': this.getStarCoderResponse(message, hasFiles),
-            'deepseek-coder': this.getDeepSeekResponse(message, hasFiles)
+            'gpt-4': this.getGPT4Response(message, hasFiles, queryAnalysis),
+            'gpt-3.5-turbo': this.getGPT35Response(message, hasFiles, queryAnalysis),
+            'claude-3': this.getClaudeResponse(message, hasFiles, queryAnalysis),
+            'gemini-pro': this.getGeminiResponse(message, hasFiles, queryAnalysis),
+            'llama-2': this.getLlamaResponse(message, hasFiles, queryAnalysis),
+            'palm-2': this.getPaLMResponse(message, hasFiles, queryAnalysis),
+            'mistral-7b': this.getMistralResponse(message, hasFiles, queryAnalysis),
+            'codellama': this.getCodeLlamaResponse(message, hasFiles, queryAnalysis),
+            'vicuna': this.getVicunaResponse(message, hasFiles, queryAnalysis),
+            'wizardcoder': this.getWizardCoderResponse(message, hasFiles, queryAnalysis),
+            'starcoder': this.getStarCoderResponse(message, hasFiles, queryAnalysis),
+            'deepseek-coder': this.getDeepSeekResponse(message, hasFiles, queryAnalysis)
         };
         
         return responses[model] || responses['gpt-4'];
     }
 
-    getGPT4Response(message, hasFiles = false) {
+    analyzeQuery(message) {
         const lowerMessage = message.toLowerCase();
+        const analysis = {
+            intent: 'general',
+            technologies: [],
+            domains: [],
+            urgency: 'normal',
+            complexity: 'medium'
+        };
+
+        // Detect intent
+        if (lowerMessage.includes('how to') || lowerMessage.includes('how do i')) {
+            analysis.intent = 'tutorial';
+        } else if (lowerMessage.includes('what is') || lowerMessage.includes('explain')) {
+            analysis.intent = 'explanation';
+        } else if (lowerMessage.includes('fix') || lowerMessage.includes('error') || lowerMessage.includes('problem')) {
+            analysis.intent = 'troubleshooting';
+        } else if (lowerMessage.includes('best practice') || lowerMessage.includes('recommendation')) {
+            analysis.intent = 'best_practices';
+        } else if (lowerMessage.includes('compare') || lowerMessage.includes('vs') || lowerMessage.includes('difference')) {
+            analysis.intent = 'comparison';
+        }
+
+        // Detect technologies
+        const techKeywords = {
+            'javascript': ['javascript', 'js', 'node', 'react', 'vue', 'angular'],
+            'python': ['python', 'django', 'flask', 'fastapi'],
+            'java': ['java', 'spring', 'maven', 'gradle'],
+            'aws': ['aws', 'amazon web services', 'ec2', 's3', 'lambda'],
+            'azure': ['azure', 'microsoft azure', 'azure functions'],
+            'gcp': ['gcp', 'google cloud', 'gke', 'cloud functions'],
+            'docker': ['docker', 'container', 'kubernetes', 'k8s'],
+            'security': ['security', 'cybersecurity', 'encryption', 'authentication'],
+            'devops': ['devops', 'ci/cd', 'jenkins', 'gitlab', 'github actions'],
+            'database': ['database', 'sql', 'mongodb', 'postgresql', 'mysql']
+        };
+
+        for (const [tech, keywords] of Object.entries(techKeywords)) {
+            if (keywords.some(keyword => lowerMessage.includes(keyword))) {
+                analysis.technologies.push(tech);
+            }
+        }
+
+        // Detect domains
+        if (lowerMessage.includes('web') || lowerMessage.includes('website') || lowerMessage.includes('frontend')) {
+            analysis.domains.push('web_development');
+        }
+        if (lowerMessage.includes('mobile') || lowerMessage.includes('app')) {
+            analysis.domains.push('mobile_development');
+        }
+        if (lowerMessage.includes('data') || lowerMessage.includes('analytics') || lowerMessage.includes('ml')) {
+            analysis.domains.push('data_science');
+        }
+        if (lowerMessage.includes('cloud') || lowerMessage.includes('infrastructure')) {
+            analysis.domains.push('cloud_computing');
+        }
+
+        // Detect urgency
+        if (lowerMessage.includes('urgent') || lowerMessage.includes('asap') || lowerMessage.includes('immediately')) {
+            analysis.urgency = 'high';
+        } else if (lowerMessage.includes('learn') || lowerMessage.includes('study') || lowerMessage.includes('explore')) {
+            analysis.urgency = 'low';
+        }
+
+        // Detect complexity
+        if (lowerMessage.includes('simple') || lowerMessage.includes('basic') || lowerMessage.includes('beginner')) {
+            analysis.complexity = 'low';
+        } else if (lowerMessage.includes('complex') || lowerMessage.includes('advanced') || lowerMessage.includes('enterprise')) {
+            analysis.complexity = 'high';
+        }
+
+        return analysis;
+    }
+
+    generateContextualGPT4Response(message, analysis, hasFiles) {
+        let response = `**🤖 AI-Powered Analysis (GPT-4)**\n\n`;
+        
+        // Add context based on intent
+        switch (analysis.intent) {
+            case 'tutorial':
+                response += `**📚 Step-by-Step Tutorial**\n\nI'll guide you through implementing "${message}" with detailed steps:\n\n`;
+                break;
+            case 'explanation':
+                response += `**📖 Comprehensive Explanation**\n\nLet me explain "${message}" in detail:\n\n`;
+                break;
+            case 'troubleshooting':
+                response += `**🔧 Troubleshooting Guide**\n\nI'll help you resolve the issue with "${message}":\n\n`;
+                break;
+            case 'best_practices':
+                response += `**⭐ Best Practices & Recommendations**\n\nHere are the industry best practices for "${message}":\n\n`;
+                break;
+            case 'comparison':
+                response += `**⚖️ Detailed Comparison**\n\nLet me compare the options for "${message}":\n\n`;
+                break;
+            default:
+                response += `**💡 Comprehensive Analysis**\n\nBased on your query about "${message}":\n\n`;
+        }
+
+        // Add technology-specific content
+        if (analysis.technologies.length > 0) {
+            response += `## **Technologies Detected**\n`;
+            analysis.technologies.forEach(tech => {
+                response += `• **${tech.charAt(0).toUpperCase() + tech.slice(1)}** - `;
+                switch (tech) {
+                    case 'javascript':
+                        response += `Modern web development with React, Vue, or Angular\n`;
+                        break;
+                    case 'python':
+                        response += `Data science, web development, and automation\n`;
+                        break;
+                    case 'aws':
+                        response += `Cloud computing and serverless architecture\n`;
+                        break;
+                    case 'azure':
+                        response += `Microsoft cloud platform and enterprise solutions\n`;
+                        break;
+                    case 'gcp':
+                        response += `Google Cloud Platform for AI/ML and data analytics\n`;
+                        break;
+                    case 'docker':
+                        response += `Containerization and microservices architecture\n`;
+                        break;
+                    case 'security':
+                        response += `Cybersecurity and data protection\n`;
+                        break;
+                    case 'devops':
+                        response += `Development operations and CI/CD pipelines\n`;
+                        break;
+                    case 'database':
+                        response += `Data storage and management solutions\n`;
+                        break;
+                }
+            });
+            response += `\n`;
+        }
+
+        // Add domain-specific recommendations
+        if (analysis.domains.length > 0) {
+            response += `## **Domain-Specific Recommendations**\n`;
+            analysis.domains.forEach(domain => {
+                switch (domain) {
+                    case 'web_development':
+                        response += `• **Web Development**: Focus on responsive design, performance optimization, and modern frameworks\n`;
+                        break;
+                    case 'mobile_development':
+                        response += `• **Mobile Development**: Consider cross-platform solutions like React Native or Flutter\n`;
+                        break;
+                    case 'data_science':
+                        response += `• **Data Science**: Leverage Python libraries like Pandas, NumPy, and Scikit-learn\n`;
+                        break;
+                    case 'cloud_computing':
+                        response += `• **Cloud Computing**: Implement scalable, secure, and cost-effective solutions\n`;
+                        break;
+                }
+            });
+            response += `\n`;
+        }
+
+        // Add complexity-appropriate guidance
+        if (analysis.complexity === 'low') {
+            response += `## **Beginner-Friendly Approach**\n`;
+            response += `• Start with simple, well-documented solutions\n`;
+            response += `• Use beginner-friendly tools and frameworks\n`;
+            response += `• Focus on understanding core concepts first\n`;
+            response += `• Build small projects to practice\n\n`;
+        } else if (analysis.complexity === 'high') {
+            response += `## **Enterprise-Grade Solution**\n`;
+            response += `• Implement robust architecture patterns\n`;
+            response += `• Use enterprise-grade tools and frameworks\n`;
+            response += `• Focus on scalability, security, and maintainability\n`;
+            response += `• Consider microservices and distributed systems\n\n`;
+        }
+
+        // Add urgency-appropriate timeline
+        if (analysis.urgency === 'high') {
+            response += `## **Quick Implementation**\n`;
+            response += `• Prioritize immediate solutions and quick wins\n`;
+            response += `• Use proven, battle-tested approaches\n`;
+            response += `• Consider cloud-based solutions for faster deployment\n\n`;
+        }
+
+        // Add file context if applicable
+        if (hasFiles) {
+            response += `## **File Analysis**\n`;
+            response += `I've analyzed your uploaded files and will incorporate their content into my recommendations.\n\n`;
+        }
+
+        response += `## **Next Steps**\n`;
+        response += `Would you like me to:\n`;
+        response += `• Provide detailed implementation steps?\n`;
+        response += `• Show code examples?\n`;
+        response += `• Recommend specific tools and frameworks?\n`;
+        response += `• Explain any particular aspect in more detail?\n\n`;
+        response += `**💡 Pro Tip**: Feel free to ask follow-up questions for more specific guidance!`;
+
+        return response;
+    }
+
+    getGPT4Response(message, hasFiles = false, queryAnalysis = null) {
+        const lowerMessage = message.toLowerCase();
+        
+        // Generate response based on query analysis
+        if (queryAnalysis) {
+            return this.generateContextualGPT4Response(message, queryAnalysis, hasFiles);
+        }
         
         if (lowerMessage.includes('cybersecurity') || lowerMessage.includes('security')) {
             return `**🔒 Cybersecurity Analysis (GPT-4)**
