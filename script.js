@@ -39,239 +39,556 @@ window.addEventListener('scroll', () => {
     }
 });
 
-// AI Search Functionality
-class AISearch {
+// Enhanced AI Search with ChatGPT-like Interface
+class EnhancedAISearch {
     constructor() {
         this.searchInput = document.getElementById('searchInput');
         this.searchBtn = document.getElementById('searchBtn');
-        this.searchResults = document.getElementById('searchResults');
+        this.chatMessages = document.getElementById('chatMessages');
+        this.aiModel = document.getElementById('aiModel');
+        this.fileInput = document.getElementById('fileInput');
+        this.fileUploadArea = document.getElementById('fileUploadArea');
+        this.promptSuggestions = document.getElementById('promptSuggestions');
+        this.uploadedFiles = [];
+        this.conversationHistory = [];
         this.isLoading = false;
         
         this.init();
     }
 
     init() {
-        this.searchBtn.addEventListener('click', () => this.performSearch());
+        this.searchBtn.addEventListener('click', () => this.sendMessage());
         this.searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                this.performSearch();
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                this.sendMessage();
+            }
+        });
+        
+        // File upload handling
+        this.fileInput.addEventListener('change', (e) => this.handleFileUpload(e));
+        this.fileUploadArea.addEventListener('click', () => this.fileInput.click());
+        this.fileUploadArea.addEventListener('dragover', (e) => this.handleDragOver(e));
+        this.fileUploadArea.addEventListener('drop', (e) => this.handleDrop(e));
+        this.fileUploadArea.addEventListener('dragleave', (e) => this.handleDragLeave(e));
+        
+        // Prompt suggestions
+        this.searchInput.addEventListener('input', () => this.showPromptSuggestions());
+        this.searchInput.addEventListener('focus', () => this.showPromptSuggestions());
+        this.searchInput.addEventListener('blur', () => {
+            setTimeout(() => this.hidePromptSuggestions(), 200);
+        });
+    }
+
+    async sendMessage() {
+        const message = this.searchInput.value.trim();
+        if (!message || this.isLoading) return;
+
+        // Add user message to chat
+        this.addMessage('user', message);
+        this.searchInput.value = '';
+        this.hidePromptSuggestions();
+        
+        // Show chat interface
+        this.chatMessages.classList.add('show');
+        this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+
+        // Add loading message
+        const loadingId = this.addLoadingMessage();
+        
+        try {
+            // Simulate AI response
+            const response = await this.getAIResponse(message);
+            this.removeLoadingMessage(loadingId);
+            this.addMessage('assistant', response);
+            
+            // Add follow-up suggestions
+            this.addFollowUpSuggestions(response);
+            
+        } catch (error) {
+            this.removeLoadingMessage(loadingId);
+            this.addMessage('assistant', 'Sorry, I encountered an error processing your request. Please try again.');
+        }
+    }
+
+    addMessage(type, content) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${type}`;
+        
+        const avatar = document.createElement('div');
+        avatar.className = 'message-avatar';
+        avatar.innerHTML = type === 'user' ? '<i class="fas fa-user"></i>' : '<i class="fas fa-robot"></i>';
+        
+        const messageContent = document.createElement('div');
+        messageContent.className = 'message-content';
+        
+        const messageText = document.createElement('div');
+        messageText.className = 'message-text';
+        messageText.innerHTML = this.formatMessage(content);
+        
+        const messageTime = document.createElement('div');
+        messageTime.className = 'message-time';
+        messageTime.textContent = new Date().toLocaleTimeString();
+        
+        messageContent.appendChild(messageText);
+        messageContent.appendChild(messageTime);
+        
+        messageDiv.appendChild(avatar);
+        messageDiv.appendChild(messageContent);
+        
+        this.chatMessages.appendChild(messageDiv);
+        this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+        
+        // Store in conversation history
+        this.conversationHistory.push({ type, content, timestamp: new Date() });
+    }
+
+    addLoadingMessage() {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message assistant loading-message';
+        messageDiv.id = 'loading-' + Date.now();
+        
+        const avatar = document.createElement('div');
+        avatar.className = 'message-avatar';
+        avatar.innerHTML = '<i class="fas fa-robot"></i>';
+        
+        const messageContent = document.createElement('div');
+        messageContent.className = 'message-content';
+        messageContent.innerHTML = '<div class="loading"></div> Thinking...';
+        
+        messageDiv.appendChild(avatar);
+        messageDiv.appendChild(messageContent);
+        
+        this.chatMessages.appendChild(messageDiv);
+        this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+        
+        return messageDiv.id;
+    }
+
+    removeLoadingMessage(loadingId) {
+        const loadingMessage = document.getElementById(loadingId);
+        if (loadingMessage) {
+            loadingMessage.remove();
+        }
+    }
+
+    formatMessage(content) {
+        // Convert markdown-like formatting to HTML
+        return content
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            .replace(/`(.*?)`/g, '<code>$1</code>')
+            .replace(/\n/g, '<br>');
+    }
+
+    async getAIResponse(message) {
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        const selectedModel = this.aiModel.value;
+        const lowerMessage = message.toLowerCase();
+        
+        // Generate contextual responses based on model and query
+        let response = this.generateContextualResponse(lowerMessage, selectedModel);
+        
+        // Add file context if files are uploaded
+        if (this.uploadedFiles.length > 0) {
+            response += this.generateFileContext();
+        }
+        
+        return response;
+    }
+
+    generateContextualResponse(message, model) {
+        const responses = {
+            'gpt-4': this.getGPT4Response(message),
+            'gpt-3.5-turbo': this.getGPT35Response(message),
+            'claude-3': this.getClaudeResponse(message),
+            'gemini-pro': this.getGeminiResponse(message),
+            'llama-2': this.getLlamaResponse(message),
+            'palm-2': this.getPaLMResponse(message)
+        };
+        
+        return responses[model] || responses['gpt-4'];
+    }
+
+    getGPT4Response(message) {
+        if (message.includes('cybersecurity') || message.includes('security')) {
+            return `**Cybersecurity Analysis (GPT-4)**
+
+Based on your query, here's a comprehensive analysis:
+
+**Key Security Considerations:**
+• Implement zero-trust architecture principles
+• Deploy advanced threat detection using AI/ML
+• Regular security audits and penetration testing
+• Employee training and awareness programs
+• Multi-factor authentication across all systems
+
+**Recommended Actions:**
+1. Conduct a comprehensive security assessment
+2. Implement endpoint detection and response (EDR)
+3. Set up security information and event management (SIEM)
+4. Create incident response procedures
+5. Regular backup and disaster recovery testing
+
+Would you like me to elaborate on any specific aspect of cybersecurity implementation?`;
+        }
+        
+        if (message.includes('ai') || message.includes('artificial intelligence')) {
+            return `**AI Implementation Strategy (GPT-4)**
+
+**Current AI Landscape:**
+• Machine Learning models are becoming more accessible
+• Large Language Models are revolutionizing business processes
+• AI ethics and governance are critical considerations
+
+**Implementation Roadmap:**
+1. **Assessment Phase**: Identify use cases and data requirements
+2. **Pilot Projects**: Start with low-risk, high-impact applications
+3. **Infrastructure Setup**: Cloud-based AI services or on-premises
+4. **Model Development**: Custom models or pre-trained solutions
+5. **Deployment**: Production-ready AI applications
+6. **Monitoring**: Performance tracking and continuous improvement
+
+**Key Technologies:**
+• TensorFlow/PyTorch for ML development
+• OpenAI API for language tasks
+• AWS SageMaker/Azure ML for model deployment
+• MLOps for production management
+
+What specific AI use case are you looking to implement?`;
+        }
+        
+        return `**Comprehensive Analysis (GPT-4)**
+
+I understand you're looking for guidance on: "${message}"
+
+**My Analysis:**
+This is a complex topic that requires careful consideration of multiple factors. Let me break this down systematically:
+
+**Key Considerations:**
+• Technical requirements and constraints
+• Business objectives and ROI
+• Implementation timeline and resources
+• Risk assessment and mitigation
+• Long-term scalability and maintenance
+
+**Recommended Approach:**
+1. **Discovery Phase**: Gather detailed requirements
+2. **Research Phase**: Investigate best practices and solutions
+3. **Planning Phase**: Create detailed implementation plan
+4. **Execution Phase**: Implement with proper testing
+5. **Optimization Phase**: Monitor and improve
+
+**Next Steps:**
+Could you provide more specific details about your current situation, constraints, and desired outcomes? This will help me give you more targeted advice.`;
+    }
+
+    getGPT35Response(message) {
+        return `**Quick Response (GPT-3.5 Turbo)**
+
+I can help you with: "${message}"
+
+**Key Points:**
+• This is a common challenge in modern business
+• Several proven approaches exist
+• Implementation depends on your specific context
+
+**Immediate Actions:**
+1. Define clear objectives
+2. Research available solutions
+3. Create implementation timeline
+4. Start with pilot project
+
+Would you like me to dive deeper into any specific aspect?`;
+    }
+
+    getClaudeResponse(message) {
+        return `**Thoughtful Analysis (Claude 3)**
+
+Regarding "${message}", I'd like to approach this systematically:
+
+**Understanding the Problem:**
+This appears to be a multifaceted challenge that requires careful analysis of both technical and business considerations.
+
+**My Perspective:**
+• Every solution has trade-offs
+• Context matters significantly
+• Iterative approach often works best
+• Documentation and monitoring are crucial
+
+**Suggested Framework:**
+1. **Problem Definition**: Clearly articulate the challenge
+2. **Solution Research**: Investigate multiple approaches
+3. **Risk Assessment**: Identify potential issues
+4. **Implementation Plan**: Step-by-step execution
+5. **Success Metrics**: How to measure progress
+
+What's your current understanding of this challenge, and what specific outcomes are you hoping to achieve?`;
+    }
+
+    getGeminiResponse(message) {
+        return `**Multi-Modal Analysis (Gemini Pro)**
+
+Your query about "${message}" touches on several important areas:
+
+**Technical Considerations:**
+• Scalability and performance requirements
+• Integration with existing systems
+• Security and compliance needs
+• User experience optimization
+
+**Business Impact:**
+• Cost-benefit analysis
+• Time-to-market considerations
+• Competitive advantages
+• Long-term strategic value
+
+**Implementation Strategy:**
+1. **Phase 1**: Foundation and core functionality
+2. **Phase 2**: Advanced features and optimization
+3. **Phase 3**: Scale and expand capabilities
+
+**Questions for You:**
+• What's your current technical stack?
+• What's your timeline and budget?
+• Who are your target users?
+• What success looks like to you?
+
+This information will help me provide more specific guidance.`;
+    }
+
+    getLlamaResponse(message) {
+        return `**Open Source Perspective (Llama 2)**
+
+For "${message}", here's my analysis:
+
+**Open Source Solutions:**
+• Often more cost-effective
+• High customization potential
+• Strong community support
+• Transparency and security benefits
+
+**Implementation Considerations:**
+• Technical expertise requirements
+• Community support availability
+• Documentation quality
+• Long-term maintenance
+
+**Recommended Approach:**
+1. Evaluate open source options
+2. Consider hybrid solutions
+3. Plan for community engagement
+4. Ensure proper documentation
+
+What's your experience level with open source technologies?`;
+    }
+
+    getPaLMResponse(message) {
+        return `**Google AI Perspective (PaLM 2)**
+
+Regarding "${message}":
+
+**Google Cloud Integration:**
+• Seamless integration with Google services
+• Advanced AI/ML capabilities
+• Global infrastructure
+• Enterprise-grade security
+
+**Key Benefits:**
+• Scalable and reliable
+• Advanced analytics
+• Machine learning integration
+• Cost optimization
+
+**Implementation Path:**
+1. **Assessment**: Current state analysis
+2. **Migration**: Gradual transition strategy
+3. **Optimization**: Performance tuning
+4. **Innovation**: Advanced features
+
+Are you currently using any Google Cloud services?`;
+    }
+
+    generateFileContext() {
+        return `
+
+**📎 File Context:**
+I notice you've uploaded ${this.uploadedFiles.length} file(s). I can analyze these files to provide more specific guidance. The uploaded files include:
+${this.uploadedFiles.map(file => `• ${file.name} (${file.type})`).join('\n')}
+
+Would you like me to analyze the content of these files to provide more targeted recommendations?`;
+    }
+
+    addFollowUpSuggestions(response) {
+        const suggestions = this.generateFollowUpSuggestions(response);
+        if (suggestions.length > 0) {
+            const suggestionsDiv = document.createElement('div');
+            suggestionsDiv.className = 'follow-up-suggestions';
+            suggestionsDiv.innerHTML = `
+                <div style="margin-top: 1rem; padding: 1rem; background-color: #f8fafc; border-radius: 8px; border-left: 4px solid #2563eb;">
+                    <strong>💡 Follow-up Questions:</strong>
+                    <div style="margin-top: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                        ${suggestions.map(suggestion => 
+                            `<span class="suggestion-tag" onclick="window.aiSearch.selectSuggestion('${suggestion}')">${suggestion}</span>`
+                        ).join('')}
+                    </div>
+                </div>
+            `;
+            this.chatMessages.appendChild(suggestionsDiv);
+            this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+        }
+    }
+
+    generateFollowUpSuggestions(response) {
+        const suggestions = [];
+        
+        if (response.includes('cybersecurity')) {
+            suggestions.push('How do I implement zero-trust architecture?', 'What are the best security tools?', 'How to train employees on security?');
+        }
+        
+        if (response.includes('AI') || response.includes('artificial intelligence')) {
+            suggestions.push('What AI models should I use?', 'How to measure AI ROI?', 'What are the ethical considerations?');
+        }
+        
+        if (response.includes('cloud')) {
+            suggestions.push('Which cloud provider is best?', 'How to migrate to cloud?', 'What about cloud security?');
+        }
+        
+        suggestions.push('Can you provide more details?', 'What are the costs involved?', 'How long does implementation take?');
+        
+        return suggestions.slice(0, 4); // Limit to 4 suggestions
+    }
+
+    selectSuggestion(suggestion) {
+        this.searchInput.value = suggestion;
+        this.sendMessage();
+    }
+
+    // File upload handling
+    handleFileUpload(event) {
+        const files = Array.from(event.target.files);
+        this.processFiles(files);
+    }
+
+    handleDragOver(event) {
+        event.preventDefault();
+        this.fileUploadArea.classList.add('dragover');
+    }
+
+    handleDrop(event) {
+        event.preventDefault();
+        this.fileUploadArea.classList.remove('dragover');
+        const files = Array.from(event.dataTransfer.files);
+        this.processFiles(files);
+    }
+
+    handleDragLeave(event) {
+        event.preventDefault();
+        this.fileUploadArea.classList.remove('dragover');
+    }
+
+    processFiles(files) {
+        files.forEach(file => {
+            if (this.validateFile(file)) {
+                this.uploadedFiles.push(file);
+                this.displayUploadedFile(file);
             }
         });
     }
 
-    async performSearch() {
-        const query = this.searchInput.value.trim();
-        if (!query || this.isLoading) return;
-
-        this.isLoading = true;
-        this.showLoading();
-
-        try {
-            // Simulate AI search with different responses based on query
-            const results = await this.simulateAISearch(query);
-            this.displayResults(results);
-        } catch (error) {
-            this.displayError('Sorry, there was an error processing your search. Please try again.');
-        } finally {
-            this.isLoading = false;
-        }
-    }
-
-    showLoading() {
-        this.searchResults.innerHTML = `
-            <div style="text-align: center; padding: 2rem;">
-                <div class="loading"></div>
-                <p style="margin-top: 1rem; color: #64748b;">Searching AI knowledge base...</p>
-            </div>
-        `;
-        this.searchResults.classList.add('show');
-    }
-
-    async simulateAISearch(query) {
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 1500));
-
-        const lowerQuery = query.toLowerCase();
+    validateFile(file) {
+        const maxSize = 10 * 1024 * 1024; // 10MB
+        const allowedTypes = ['text/plain', 'application/pdf', 'image/jpeg', 'image/png', 'text/csv', 'application/json'];
         
-        // Generate contextual responses based on query keywords
-        if (lowerQuery.includes('cybersecurity') || lowerQuery.includes('security')) {
-            return this.getCybersecurityResults(query);
-        } else if (lowerQuery.includes('ai') || lowerQuery.includes('artificial intelligence')) {
-            return this.getAIResults(query);
-        } else if (lowerQuery.includes('cloud') || lowerQuery.includes('aws') || lowerQuery.includes('azure')) {
-            return this.getCloudResults(query);
-        } else if (lowerQuery.includes('development') || lowerQuery.includes('programming') || lowerQuery.includes('code')) {
-            return this.getDevelopmentResults(query);
-        } else if (lowerQuery.includes('business') || lowerQuery.includes('strategy')) {
-            return this.getBusinessResults(query);
-        } else {
-            return this.getGeneralResults(query);
-        }
-    }
-
-    getCybersecurityResults(query) {
-        return [
-            {
-                title: "Cybersecurity Best Practices for 2024",
-                content: "Implement multi-factor authentication, regular security audits, employee training programs, and zero-trust architecture. Key areas include endpoint protection, network security, data encryption, and incident response planning. Consider implementing AI-powered threat detection systems for advanced protection.",
-                category: "Cybersecurity"
-            },
-            {
-                title: "Threat Detection and Response Strategies",
-                content: "Modern threat detection involves behavioral analytics, machine learning algorithms, and real-time monitoring. Establish a Security Operations Center (SOC), implement SIEM solutions, and create comprehensive incident response procedures. Regular penetration testing and vulnerability assessments are crucial.",
-                category: "Security"
-            },
-            {
-                title: "Compliance and Regulatory Requirements",
-                content: "Ensure compliance with GDPR, HIPAA, SOX, and industry-specific regulations. Implement data governance frameworks, conduct regular compliance audits, and maintain detailed documentation. Consider working with compliance experts to navigate complex regulatory landscapes.",
-                category: "Compliance"
-            }
-        ];
-    }
-
-    getAIResults(query) {
-        return [
-            {
-                title: "AI Implementation in Business",
-                content: "Start with clear business objectives and data quality assessment. Choose appropriate AI models, implement robust data pipelines, and ensure ethical AI practices. Focus on areas like customer service automation, predictive analytics, and process optimization. Consider starting with pilot projects before full-scale implementation.",
-                category: "Artificial Intelligence"
-            },
-            {
-                title: "Machine Learning Model Development",
-                content: "Follow a structured approach: data collection and preprocessing, feature engineering, model selection and training, validation and testing, and deployment. Use frameworks like TensorFlow, PyTorch, or scikit-learn. Ensure proper model monitoring and retraining procedures.",
-                category: "Machine Learning"
-            },
-            {
-                title: "Natural Language Processing Applications",
-                content: "NLP can be applied to chatbots, sentiment analysis, document processing, and language translation. Use pre-trained models like BERT or GPT for faster development. Consider fine-tuning models for specific domains and ensure proper data privacy and bias mitigation.",
-                category: "NLP"
-            }
-        ];
-    }
-
-    getCloudResults(query) {
-        return [
-            {
-                title: "Cloud Migration Strategy",
-                content: "Assess current infrastructure, choose appropriate cloud providers (AWS, Azure, GCP), plan migration phases, and ensure security compliance. Use cloud-native services, implement proper monitoring, and establish cost optimization practices. Consider hybrid or multi-cloud approaches for complex requirements.",
-                category: "Cloud Computing"
-            },
-            {
-                title: "Cloud Security and Compliance",
-                content: "Implement identity and access management (IAM), data encryption at rest and in transit, network security groups, and regular security audits. Use cloud security tools like AWS Security Hub or Azure Security Center. Ensure compliance with industry standards and regulations.",
-                category: "Cloud Security"
-            },
-            {
-                title: "DevOps and CI/CD in the Cloud",
-                content: "Implement Infrastructure as Code (IaC) using Terraform or CloudFormation, set up automated CI/CD pipelines, use containerization with Docker and Kubernetes, and implement monitoring and logging solutions. Focus on automation, scalability, and reliability.",
-                category: "DevOps"
-            }
-        ];
-    }
-
-    getDevelopmentResults(query) {
-        return [
-            {
-                title: "Modern Web Development Practices",
-                content: "Use modern frameworks like React, Vue, or Angular for frontend development. Implement responsive design, progressive web apps (PWAs), and ensure accessibility compliance. Follow clean code principles, implement proper testing strategies, and use version control effectively.",
-                category: "Web Development"
-            },
-            {
-                title: "API Development and Integration",
-                content: "Design RESTful APIs with proper documentation, implement authentication and authorization, use API gateways for management, and ensure proper error handling. Consider GraphQL for complex data requirements and implement rate limiting and monitoring.",
-                category: "API Development"
-            },
-            {
-                title: "Database Design and Optimization",
-                content: "Choose appropriate database types (SQL vs NoSQL), design efficient schemas, implement proper indexing, and optimize queries. Consider database scaling strategies, backup and recovery procedures, and data migration techniques.",
-                category: "Database"
-            }
-        ];
-    }
-
-    getBusinessResults(query) {
-        return [
-            {
-                title: "Digital Transformation Strategy",
-                content: "Assess current state, define digital goals, identify key technologies, and create implementation roadmap. Focus on customer experience, operational efficiency, and data-driven decision making. Ensure change management and employee training are part of the strategy.",
-                category: "Business Strategy"
-            },
-            {
-                title: "Technology ROI and Value Measurement",
-                content: "Define clear success metrics, measure both quantitative and qualitative benefits, track implementation costs, and calculate return on investment. Consider total cost of ownership (TCO) and long-term value creation. Regular reviews and adjustments are essential.",
-                category: "Business Value"
-            },
-            {
-                title: "Technology Team Building and Management",
-                content: "Hire skilled professionals, invest in continuous learning, create collaborative work environments, and implement agile methodologies. Focus on team diversity, knowledge sharing, and career development opportunities. Consider remote work policies and tools.",
-                category: "Team Management"
-            }
-        ];
-    }
-
-    getGeneralResults(query) {
-        return [
-            {
-                title: "Technology Trends and Future Outlook",
-                content: "Key trends include artificial intelligence, quantum computing, edge computing, 5G networks, and sustainable technology. Organizations should stay informed about emerging technologies, invest in research and development, and prepare for digital disruption.",
-                category: "Technology Trends"
-            },
-            {
-                title: "Digital Innovation and Competitive Advantage",
-                content: "Leverage technology to create unique value propositions, improve customer experiences, and optimize operations. Focus on innovation culture, rapid prototyping, and customer feedback integration. Consider partnerships and ecosystem development.",
-                category: "Innovation"
-            },
-            {
-                title: "Technology Risk Management",
-                content: "Identify and assess technology risks, implement mitigation strategies, ensure business continuity planning, and maintain cybersecurity posture. Regular risk assessments, incident response planning, and insurance coverage are important considerations.",
-                category: "Risk Management"
-            }
-        ];
-    }
-
-    displayResults(results) {
-        if (results.length === 0) {
-            this.searchResults.innerHTML = `
-                <div style="text-align: center; padding: 2rem;">
-                    <i class="fas fa-search" style="font-size: 3rem; color: #64748b; margin-bottom: 1rem;"></i>
-                    <h3 style="color: #1e293b; margin-bottom: 1rem;">No results found</h3>
-                    <p style="color: #64748b;">Try rephrasing your question or using different keywords.</p>
-                </div>
-            `;
-        } else {
-            const resultsHTML = results.map(result => `
-                <div class="result-item">
-                    <div class="result-title">${result.title}</div>
-                    <div class="result-content">${result.content}</div>
-                    <div style="margin-top: 0.5rem;">
-                        <span style="background-color: #e0f2fe; color: #0369a1; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.875rem; font-weight: 500;">
-                            ${result.category}
-                        </span>
-                    </div>
-                </div>
-            `).join('');
-
-            this.searchResults.innerHTML = `
-                <div style="margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid #e2e8f0;">
-                    <h3 style="color: #1e293b; margin-bottom: 0.5rem;">AI Search Results</h3>
-                    <p style="color: #64748b; font-size: 0.9rem;">Found ${results.length} relevant result${results.length > 1 ? 's' : ''} for "${this.searchInput.value}"</p>
-                </div>
-                ${resultsHTML}
-            `;
+        if (file.size > maxSize) {
+            alert('File size must be less than 10MB');
+            return false;
         }
         
-        this.searchResults.classList.add('show');
+        if (!allowedTypes.includes(file.type)) {
+            alert('File type not supported');
+            return false;
+        }
+        
+        return true;
     }
 
-    displayError(message) {
-        this.searchResults.innerHTML = `
-            <div style="text-align: center; padding: 2rem;">
-                <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ef4444; margin-bottom: 1rem;"></i>
-                <h3 style="color: #1e293b; margin-bottom: 1rem;">Search Error</h3>
-                <p style="color: #64748b;">${message}</p>
-            </div>
+    displayUploadedFile(file) {
+        const uploadedFilesDiv = this.fileUploadArea.querySelector('.uploaded-files') || 
+            this.createUploadedFilesDiv();
+        
+        const fileTag = document.createElement('div');
+        fileTag.className = 'file-tag';
+        fileTag.innerHTML = `
+            ${file.name}
+            <span class="remove-file" onclick="window.aiSearch.removeFile('${file.name}')">×</span>
         `;
-        this.searchResults.classList.add('show');
+        
+        uploadedFilesDiv.appendChild(fileTag);
+    }
+
+    createUploadedFilesDiv() {
+        const div = document.createElement('div');
+        div.className = 'uploaded-files';
+        this.fileUploadArea.appendChild(div);
+        return div;
+    }
+
+    removeFile(fileName) {
+        this.uploadedFiles = this.uploadedFiles.filter(file => file.name !== fileName);
+        const fileTags = this.fileUploadArea.querySelectorAll('.file-tag');
+        fileTags.forEach(tag => {
+            if (tag.textContent.includes(fileName)) {
+                tag.remove();
+            }
+        });
+    }
+
+    // Prompt suggestions
+    showPromptSuggestions() {
+        const query = this.searchInput.value.toLowerCase();
+        if (query.length < 2) {
+            this.hidePromptSuggestions();
+            return;
+        }
+
+        const suggestions = this.getPromptSuggestions(query);
+        if (suggestions.length > 0) {
+            this.promptSuggestions.innerHTML = suggestions.map(suggestion => 
+                `<span class="suggestion-tag" onclick="window.aiSearch.selectSuggestion('${suggestion}')">${suggestion}</span>`
+            ).join('');
+            this.promptSuggestions.classList.add('show');
+        }
+    }
+
+    hidePromptSuggestions() {
+        this.promptSuggestions.classList.remove('show');
+    }
+
+    getPromptSuggestions(query) {
+        const allSuggestions = [
+            'How to implement cybersecurity best practices?',
+            'What are the latest AI trends in business?',
+            'How to migrate to cloud infrastructure?',
+            'What is zero-trust architecture?',
+            'How to build a machine learning model?',
+            'What are the benefits of microservices?',
+            'How to implement DevOps practices?',
+            'What is containerization and Kubernetes?',
+            'How to secure cloud applications?',
+            'What are the best practices for API design?',
+            'How to implement data analytics?',
+            'What is edge computing?',
+            'How to choose the right database?',
+            'What are the security implications of IoT?',
+            'How to implement CI/CD pipelines?'
+        ];
+
+        return allSuggestions.filter(suggestion => 
+            suggestion.toLowerCase().includes(query)
+        ).slice(0, 5);
     }
 }
 
@@ -297,7 +614,6 @@ class ContactForm {
             message: formData.get('message')
         };
 
-        // Simulate form submission
         this.showLoading();
         
         setTimeout(() => {
@@ -375,7 +691,7 @@ class ScrollAnimations {
 
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    new AISearch();
+    window.aiSearch = new EnhancedAISearch();
     new ContactForm();
     new ScrollAnimations();
     

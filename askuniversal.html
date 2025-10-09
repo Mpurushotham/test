@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AskUniversal AI - CyberTarget</title>
+    <meta name="description" content="Universal AI assistant for technology solutions, architecture design, and step-by-step implementation guidance.">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <div class="logo-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h2>CyberTarget</h2>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="index.html#about" class="nav-link">About</a>
+                </li>
+                <li class="nav-item">
+                    <a href="index.html#services" class="nav-link">Services</a>
+                </li>
+                <li class="nav-item">
+                    <a href="index.html#blogs" class="nav-link">Tech Blogs</a>
+                </li>
+                <li class="nav-item">
+                    <a href="index.html#contact" class="nav-link">Contact</a>
+                </li>
+                <li class="nav-item">
+                    <a href="askuniversal.html" class="nav-link active">AskUniversal AI</a>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">AskUniversal AI</h1>
+                <p class="hero-subtitle">Get comprehensive technology solutions with step-by-step architecture design, implementation guidance, and visual diagrams for your specific requirements.</p>
+            </div>
+            <div class="hero-image">
+                <div class="hero-graphic">
+                    <i class="fas fa-robot"></i>
+                    <i class="fas fa-cogs"></i>
+                    <i class="fas fa-project-diagram"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Universal AI Interface -->
+    <section class="universal-ai-section">
+        <div class="container">
+            <div class="universal-ai-container">
+                <!-- Technology Stack Selection -->
+                <div class="tech-stack-selection">
+                    <h2>Select Your Technology Requirements</h2>
+                    
+                    <!-- Languages -->
+                    <div class="tech-category">
+                        <h3><i class="fas fa-code"></i> Programming Languages</h3>
+                        <div class="tech-options" id="languages">
+                            <div class="tech-option" data-tech="javascript">
+                                <i class="fab fa-js-square"></i>
+                                <span>JavaScript</span>
+                            </div>
+                            <div class="tech-option" data-tech="python">
+                                <i class="fab fa-python"></i>
+                                <span>Python</span>
+                            </div>
+                            <div class="tech-option" data-tech="java">
+                                <i class="fab fa-java"></i>
+                                <span>Java</span>
+                            </div>
+                            <div class="tech-option" data-tech="csharp">
+                                <i class="fas fa-code"></i>
+                                <span>C#</span>
+                            </div>
+                            <div class="tech-option" data-tech="go">
+                                <i class="fas fa-code"></i>
+                                <span>Go</span>
+                            </div>
+                            <div class="tech-option" data-tech="rust">
+                                <i class="fas fa-code"></i>
+                                <span>Rust</span>
+                            </div>
+                            <div class="tech-option" data-tech="php">
+                                <i class="fab fa-php"></i>
+                                <span>PHP</span>
+                            </div>
+                            <div class="tech-option" data-tech="ruby">
+                                <i class="fas fa-gem"></i>
+                                <span>Ruby</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Frontend Technologies -->
+                    <div class="tech-category">
+                        <h3><i class="fas fa-desktop"></i> Frontend Technologies</h3>
+                        <div class="tech-options" id="frontend">
+                            <div class="tech-option" data-tech="react">
+                                <i class="fab fa-react"></i>
+                                <span>React</span>
+                            </div>
+                            <div class="tech-option" data-tech="vue">
+                                <i class="fab fa-vuejs"></i>
+                                <span>Vue.js</span>
+                            </div>
+                            <div class="tech-option" data-tech="angular">
+                                <i class="fab fa-angular"></i>
+                                <span>Angular</span>
+                            </div>
+                            <div class="tech-option" data-tech="svelte">
+                                <i class="fas fa-code"></i>
+                                <span>Svelte</span>
+                            </div>
+                            <div class="tech-option" data-tech="nextjs">
+                                <i class="fas fa-code"></i>
+                                <span>Next.js</span>
+                            </div>
+                            <div class="tech-option" data-tech="nuxtjs">
+                                <i class="fas fa-code"></i>
+                                <span>Nuxt.js</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Backend Technologies -->
+                    <div class="tech-category">
+                        <h3><i class="fas fa-server"></i> Backend Technologies</h3>
+                        <div class="tech-options" id="backend">
+                            <div class="tech-option" data-tech="nodejs">
+                                <i class="fab fa-node-js"></i>
+                                <span>Node.js</span>
+                            </div>
+                            <div class="tech-option" data-tech="express">
+                                <i class="fas fa-code"></i>
+                                <span>Express.js</span>
+                            </div>
+                            <div class="tech-option" data-tech="django">
+                                <i class="fab fa-python"></i>
+                                <span>Django</span>
+                            </div>
+                            <div class="tech-option" data-tech="flask">
+                                <i class="fab fa-python"></i>
+                                <span>Flask</span>
+                            </div>
+                            <div class="tech-option" data-tech="spring">
+                                <i class="fab fa-java"></i>
+                                <span>Spring Boot</span>
+                            </div>
+                            <div class="tech-option" data-tech="aspnet">
+                                <i class="fas fa-code"></i>
+                                <span>ASP.NET</span>
+                            </div>
+                            <div class="tech-option" data-tech="fastapi">
+                                <i class="fab fa-python"></i>
+                                <span>FastAPI</span>
+                            </div>
+                            <div class="tech-option" data-tech="gin">
+                                <i class="fas fa-code"></i>
+                                <span>Gin (Go)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cloud Providers -->
+                    <div class="cloud-providers">
+                        <h3><i class="fas fa-cloud"></i> Cloud Providers</h3>
+                        
+                        <!-- AWS Services -->
+                        <div class="cloud-category">
+                            <h4><i class="fab fa-aws"></i> Amazon Web Services (AWS)</h4>
+                            <div class="tech-options" id="aws-services">
+                                <div class="tech-option" data-tech="ec2">
+                                    <i class="fas fa-server"></i>
+                                    <span>EC2</span>
+                                </div>
+                                <div class="tech-option" data-tech="s3">
+                                    <i class="fas fa-database"></i>
+                                    <span>S3</span>
+                                </div>
+                                <div class="tech-option" data-tech="lambda">
+                                    <i class="fas fa-bolt"></i>
+                                    <span>Lambda</span>
+                                </div>
+                                <div class="tech-option" data-tech="rds">
+                                    <i class="fas fa-database"></i>
+                                    <span>RDS</span>
+                                </div>
+                                <div class="tech-option" data-tech="dynamodb">
+                                    <i class="fas fa-table"></i>
+                                    <span>DynamoDB</span>
+                                </div>
+                                <div class="tech-option" data-tech="cloudfront">
+                                    <i class="fas fa-globe"></i>
+                                    <span>CloudFront</span>
+                                </div>
+                                <div class="tech-option" data-tech="ecs">
+                                    <i class="fas fa-cubes"></i>
+                                    <span>ECS</span>
+                                </div>
+                                <div class="tech-option" data-tech="eks">
+                                    <i class="fas fa-cubes"></i>
+                                    <span>EKS</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Azure Services -->
+                        <div class="cloud-category">
+                            <h4><i class="fab fa-microsoft"></i> Microsoft Azure</h4>
+                            <div class="tech-options" id="azure-services">
+                                <div class="tech-option" data-tech="azure-vm">
+                                    <i class="fas fa-server"></i>
+                                    <span>Virtual Machines</span>
+                                </div>
+                                <div class="tech-option" data-tech="azure-storage">
+                                    <i class="fas fa-database"></i>
+                                    <span>Storage</span>
+                                </div>
+                                <div class="tech-option" data-tech="azure-functions">
+                                    <i class="fas fa-bolt"></i>
+                                    <span>Functions</span>
+                                </div>
+                                <div class="tech-option" data-tech="azure-sql">
+                                    <i class="fas fa-database"></i>
+                                    <span>SQL Database</span>
+                                </div>
+                                <div class="tech-option" data-tech="azure-cosmos">
+                                    <i class="fas fa-table"></i>
+                                    <span>Cosmos DB</span>
+                                </div>
+                                <div class="tech-option" data-tech="azure-cdn">
+                                    <i class="fas fa-globe"></i>
+                                    <span>CDN</span>
+                                </div>
+                                <div class="tech-option" data-tech="azure-container">
+                                    <i class="fas fa-cubes"></i>
+                                    <span>Container Instances</span>
+                                </div>
+                                <div class="tech-option" data-tech="azure-aks">
+                                    <i class="fas fa-cubes"></i>
+                                    <span>AKS</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Google Cloud Services -->
+                        <div class="cloud-category">
+                            <h4><i class="fab fa-google"></i> Google Cloud Platform (GCP)</h4>
+                            <div class="tech-options" id="gcp-services">
+                                <div class="tech-option" data-tech="gcp-compute">
+                                    <i class="fas fa-server"></i>
+                                    <span>Compute Engine</span>
+                                </div>
+                                <div class="tech-option" data-tech="gcp-storage">
+                                    <i class="fas fa-database"></i>
+                                    <span>Cloud Storage</span>
+                                </div>
+                                <div class="tech-option" data-tech="gcp-functions">
+                                    <i class="fas fa-bolt"></i>
+                                    <span>Cloud Functions</span>
+                                </div>
+                                <div class="tech-option" data-tech="gcp-sql">
+                                    <i class="fas fa-database"></i>
+                                    <span>Cloud SQL</span>
+                                </div>
+                                <div class="tech-option" data-tech="gcp-firestore">
+                                    <i class="fas fa-table"></i>
+                                    <span>Firestore</span>
+                                </div>
+                                <div class="tech-option" data-tech="gcp-cdn">
+                                    <i class="fas fa-globe"></i>
+                                    <span>Cloud CDN</span>
+                                </div>
+                                <div class="tech-option" data-tech="gcp-run">
+                                    <i class="fas fa-cubes"></i>
+                                    <span>Cloud Run</span>
+                                </div>
+                                <div class="tech-option" data-tech="gcp-gke">
+                                    <i class="fas fa-cubes"></i>
+                                    <span>GKE</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Oracle Cloud Services -->
+                        <div class="cloud-category">
+                            <h4><i class="fas fa-database"></i> Oracle Cloud Infrastructure (OCI)</h4>
+                            <div class="tech-options" id="oci-services">
+                                <div class="tech-option" data-tech="oci-compute">
+                                    <i class="fas fa-server"></i>
+                                    <span>Compute</span>
+                                </div>
+                                <div class="tech-option" data-tech="oci-storage">
+                                    <i class="fas fa-database"></i>
+                                    <span>Object Storage</span>
+                                </div>
+                                <div class="tech-option" data-tech="oci-functions">
+                                    <i class="fas fa-bolt"></i>
+                                    <span>Functions</span>
+                                </div>
+                                <div class="tech-option" data-tech="oci-database">
+                                    <i class="fas fa-database"></i>
+                                    <span>Autonomous Database</span>
+                                </div>
+                                <div class="tech-option" data-tech="oci-nosql">
+                                    <i class="fas fa-table"></i>
+                                    <span>NoSQL Database</span>
+                                </div>
+                                <div class="tech-option" data-tech="oci-cdn">
+                                    <i class="fas fa-globe"></i>
+                                    <span>CDN</span>
+                                </div>
+                                <div class="tech-option" data-tech="oci-containers">
+                                    <i class="fas fa-cubes"></i>
+                                    <span>Container Engine</span>
+                                </div>
+                                <div class="tech-option" data-tech="oci-kubernetes">
+                                    <i class="fas fa-cubes"></i>
+                                    <span>OKE</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Query Interface -->
+                <div class="ai-query-interface">
+                    <div class="query-header">
+                        <h3>Describe Your Project Requirements</h3>
+                        <p>Tell us about your project and we'll generate a comprehensive solution with architecture diagrams</p>
+                    </div>
+                    
+                    <div class="selected-tech">
+                        <h4>Selected Technologies:</h4>
+                        <div id="selectedTechList" class="selected-tech-list"></div>
+                    </div>
+
+                    <div class="query-input">
+                        <textarea id="projectDescription" placeholder="Describe your project requirements, goals, constraints, and any specific needs..."></textarea>
+                        <button id="generateSolution" class="btn btn-primary">
+                            <i class="fas fa-magic"></i> Generate Solution
+                        </button>
+                    </div>
+
+                    <div id="solutionResults" class="solution-results"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>CyberTarget</h3>
+                    <p>Professional technology solutions and AI-powered search capabilities for modern businesses.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="index.html#services">Cybersecurity</a></li>
+                        <li><a href="index.html#services">AI Solutions</a></li>
+                        <li><a href="index.html#services">Cloud Services</a></li>
+                        <li><a href="index.html#services">Custom Development</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="index.html#blogs">Tech Blogs</a></li>
+                        <li><a href="index.html#search">AI Search</a></li>
+                        <li><a href="askuniversal.html">AskUniversal AI</a></li>
+                        <li><a href="index.html#about">About Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact Info</h4>
+                    <p>Email: info@cybertarget.cloud</p>
+                    <p>Phone: +1 (555) 123-4567</p>
+                    <p>Domain: cybertarget.cloud</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 CyberTarget. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="askuniversal.js"></script>
+</body>
+</html>

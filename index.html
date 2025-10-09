@@ -14,6 +14,9 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-logo">
+                <div class="logo-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
                 <h2>CyberTarget</h2>
             </div>
             <ul class="nav-menu">
@@ -31,6 +34,9 @@
                 </li>
                 <li class="nav-item">
                     <a href="#contact" class="nav-link">Contact</a>
+                </li>
+                <li class="nav-item">
+                    <a href="askuniversal.html" class="nav-link">AskUniversal AI</a>
                 </li>
             </ul>
             <div class="hamburger">
@@ -70,13 +76,37 @@
                 <p>Ask anything and get intelligent, comprehensive answers powered by advanced AI technology</p>
             </div>
             <div class="search-container">
-                <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="Ask me anything about technology, cybersecurity, or business solutions...">
-                    <button id="searchBtn" class="search-btn">
-                        <i class="fas fa-search"></i>
-                    </button>
+                <!-- AI Model Selection -->
+                <div class="model-selection">
+                    <label for="aiModel">Select AI Model:</label>
+                    <select id="aiModel" class="model-select">
+                        <option value="gpt-4">GPT-4 (OpenAI)</option>
+                        <option value="gpt-3.5-turbo">GPT-3.5 Turbo (OpenAI)</option>
+                        <option value="claude-3">Claude 3 (Anthropic)</option>
+                        <option value="gemini-pro">Gemini Pro (Google)</option>
+                        <option value="llama-2">Llama 2 (Meta)</option>
+                        <option value="palm-2">PaLM 2 (Google)</option>
+                    </select>
                 </div>
-                <div id="searchResults" class="search-results"></div>
+
+                <!-- Search Interface -->
+                <div class="chat-interface">
+                    <div id="chatMessages" class="chat-messages"></div>
+                    <div class="chat-input-container">
+                        <div class="file-upload-area" id="fileUploadArea">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Drag & drop files here or click to upload</p>
+                            <input type="file" id="fileInput" multiple accept=".txt,.pdf,.doc,.docx,.jpg,.png,.csv,.json">
+                        </div>
+                        <div class="search-box">
+                            <input type="text" id="searchInput" placeholder="Ask me anything about technology, cybersecurity, or business solutions...">
+                            <button id="searchBtn" class="search-btn">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                        <div id="promptSuggestions" class="prompt-suggestions"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -237,7 +267,7 @@
                         </div>
                         <h3>The Future of Cybersecurity: AI-Powered Threat Detection</h3>
                         <p>Explore how artificial intelligence is revolutionizing cybersecurity and helping organizations stay ahead of evolving threats.</p>
-                        <a href="#" class="blog-link">Read More <i class="fas fa-arrow-right"></i></a>
+                        <a href="blog-cybersecurity-ai-threat-detection.html" class="blog-link">Read More <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </article>
                 <article class="blog-card">
@@ -251,7 +281,7 @@
                         </div>
                         <h3>Implementing AI in Business: A Practical Guide</h3>
                         <p>Learn how to successfully integrate AI solutions into your business processes and maximize their potential impact.</p>
-                        <a href="#" class="blog-link">Read More <i class="fas fa-arrow-right"></i></a>
+                        <a href="blog-ai-business-implementation.html" class="blog-link">Read More <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </article>
                 <article class="blog-card">
@@ -265,7 +295,7 @@
                         </div>
                         <h3>Cloud Security Best Practices for 2024</h3>
                         <p>Essential security measures every organization should implement when migrating to or operating in the cloud.</p>
-                        <a href="#" class="blog-link">Read More <i class="fas fa-arrow-right"></i></a>
+                        <a href="blog-cloud-security-best-practices.html" class="blog-link">Read More <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </article>
                 <article class="blog-card">
@@ -279,7 +309,7 @@
                         </div>
                         <h3>Modern Web Development: Trends and Technologies</h3>
                         <p>Discover the latest trends in web development and how they're shaping the future of digital experiences.</p>
-                        <a href="#" class="blog-link">Read More <i class="fas fa-arrow-right"></i></a>
+                        <a href="blog-modern-web-development.html" class="blog-link">Read More <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </article>
             </div>
