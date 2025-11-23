@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Security Tutorial: GCP, AWS, Azure</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --gcp-color: #4285F4;
+            --aws-color: #FF9900;
+            --azure-color: #0078D4;
+            --light-color: #ecf0f1;
+            --dark-color: #34495e;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --card-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: var(--dark-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+            margin-bottom: 2rem;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.05)"/></svg>');
+            background-size: cover;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .provider-selector {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .provider-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .provider-btn.gcp {
+            background: linear-gradient(135deg, var(--gcp-color), #34A853);
+        }
+        
+        .provider-btn.aws {
+            background: linear-gradient(135deg, var(--aws-color), #FF6B00);
+        }
+        
+        .provider-btn.azure {
+            background: linear-gradient(135deg, var(--azure-color), #5C2D91);
+        }
+        
+        .provider-btn:hover, .provider-btn.active {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .content-area {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 25px;
+        }
+        
+        .sidebar {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+            transition: var(--transition);
+        }
+        
+        .sidebar:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .service-list {
+            list-style: none;
+        }
+        
+        .service-item {
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            border-left: 5px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .service-item:hover {
+            background-color: var(--light-color);
+            transform: translateX(5px);
+        }
+        
+        .service-item.active {
+            background-color: var(--light-color);
+            border-left-color: var(--secondary-color);
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+        
+        .service-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .gcp-icon {
+            background-color: var(--gcp-color);
+        }
+        
+        .aws-icon {
+            background-color: var(--aws-color);
+        }
+        
+        .azure-icon {
+            background-color: var(--azure-color);
+        }
+        
+        .main-content {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+        }
+        
+        .main-content:hover {
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .service-title {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--light-color);
+            padding-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .service-description {
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            line-height: 1.7;
+            color: #555;
+        }
+        
+        .info-section {
+            margin-bottom: 2.5rem;
+            padding: 20px;
+            border-radius: 10px;
+            background: #f9fafb;
+            transition: var(--transition);
+        }
+        
+        .info-section:hover {
+            background: #f0f4f8;
+            transform: translateY(-3px);
+        }
+        
+        .info-section h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .info-section h3 i {
+            font-size: 1.3rem;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--secondary-color);
+            color: white;
+        }
+        
+        .info-section p, .info-section ul {
+            margin-bottom: 1rem;
+        }
+        
+        .info-section ul {
+            padding-left: 20px;
+        }
+        
+        .info-section li {
+            margin-bottom: 0.8rem;
+            position: relative;
+            padding-left: 25px;
+        }
+        
+        .info-section li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--success-color);
+            font-weight: bold;
+        }
+        
+        .use-case {
+            background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 1.5rem;
+            border-left: 5px solid var(--secondary-color);
+            transition: var(--transition);
+        }
+        
+        .use-case:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .use-case h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .architecture-diagram {
+            margin: 2rem 0;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        
+        .architecture-diagram:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .diagram-title {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .diagram-container {
+            height: 300px;
+            position: relative;
+            background: #f8f9fa;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .flow-element {
+            position: absolute;
+            padding: 12px 18px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.5s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s forwards;
+        }
+        
+        .flow-line {
+            position: absolute;
+            height: 4px;
+            background: #3498db;
+            transform-origin: left center;
+            opacity: 0;
+            animation: drawLine 1s forwards 0.5s;
+        }
+        
+        .flow-arrow {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-left: 12px solid #3498db;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards 1.5s;
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes drawLine {
+            to {
+                opacity: 1;
+                width: var(--line-width);
+            }
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .comparison-table th, .comparison-table td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .comparison-table th {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            font-weight: 600;
+        }
+        
+        .comparison-table tr:hover {
+            background-color: #f5f9ff;
+        }
+        
+        .gcp-badge {
+            background: linear-gradient(135deg, var(--gcp-color), #34A853);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-right: 10px;
+        }
+        
+        .aws-badge {
+            background: linear-gradient(135deg, var(--aws-color), #FF6B00);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-right: 10px;
+        }
+        
+        .azure-badge {
+            background: linear-gradient(135deg, var(--azure-color), #5C2D91);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-right: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding: 2rem 0;
+            color: var(--dark-color);
+            border-top: 1px solid #ddd;
+        }
+        
+        .floating-animation {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+            z-index: 0;
+        }
+        
+        .floating-animation:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .floating-animation:nth-child(2) {
+            top: 60%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+        
+        .floating-animation:nth-child(3) {
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(10deg);
+            }
+        }
+        
+        @media (max-width: 1100px) {
+            .content-area {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                position: static;
+                order: 2;
+            }
+            
+            .main-content {
+                order: 1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .provider-selector {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .provider-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .service-title {
+                font-size: 1.8rem;
+            }
+            
+            .diagram-container {
+                height: 500px;
+            }
+        }
+        
+        .progress-bar {
+            height: 5px;
+            background: linear-gradient(90deg, var(--gcp-color), var(--aws-color), var(--azure-color));
+            width: 0%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    
+    <header>
+        <div class="floating-animation"></div>
+        <div class="floating-animation"></div>
+        <div class="floating-animation"></div>
+        
+        <div class="container">
+            <h1>Cloud Security Services Tutorial</h1>
+            <p class="subtitle">Comprehensive Guide to GCP, AWS, and Azure Security Services with Visual Architectures</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="provider-selector">
+            <button class="provider-btn gcp active" data-provider="gcp">
+                <i class="fab fa-google"></i> Google Cloud Platform (GCP)
+            </button>
+            <button class="provider-btn aws" data-provider="aws">
+                <i class="fab fa-aws"></i> Amazon Web Services (AWS)
+            </button>
+            <button class="provider-btn azure" data-provider="azure">
+                <i class="fab fa-microsoft"></i> Microsoft Azure
+            </button>
+        </div>
+        
+        <div class="content-area">
+            <div class="sidebar">
+                <h2>Security Services</h2>
+                <ul class="service-list" id="serviceList">
+                    <!-- Services will be populated by JavaScript -->
+                </ul>
+            </div>
+            
+            <div class="main-content">
+                <div id="serviceContent">
+                    <h2 class="service-title">
+                        <i class="fas fa-cloud-shield-alt"></i> Select a Security Service
+                    </h2>
+                    <p class="service-description">Choose a provider and then select a security service from the sidebar to learn more about it. Each service includes detailed explanations, architecture diagrams, and real-world use cases.</p>
+                    
+                    <div class="architecture-diagram">
+                        <div class="diagram-title">Cloud Security Ecosystem</div>
+                        <div class="diagram-container" id="welcomeDiagram">
+                            <!-- Welcome diagram will be rendered by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-section" id="comparisonSection">
+                    <h2>Cross-Platform Comparison</h2>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Security Domain</th>
+                                <th>GCP</th>
+                                <th>AWS</th>
+                                <th>Azure</th>
+                            </tr>
+                        </thead>
+                        <tbody id="comparisonTableBody">
+                            <!-- Content will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>Cloud Security Tutorial &copy; 2023 | Expert Guide to GCP, AWS, and Azure Security Services</p>
+        </div>
+    </footer>
+
+    <script>
+        // Data structure for all security services
+        const securityServices = {
+            gcp: [
+                {
+                    id: "gcp-security-command-center",
+                    name: "Security Command Center",
+                    description: "Google Cloud's security and risk management platform that helps you prevent, detect, and respond to threats.",
+                    whatIs: "Security Command Center is a comprehensive security management and data risk platform for Google Cloud. It provides visibility into your cloud assets, identifies misconfigurations and vulnerabilities, and helps detect threats.",
+                    whyImportant: "As organizations scale in the cloud, maintaining visibility and control over security posture becomes challenging. Security Command Center provides a centralized view of security across your Google Cloud environment.",
+                    problemsSolved: [
+                        "Lack of visibility into cloud assets and their security posture",
+                        "Difficulty identifying misconfigurations and compliance violations",
+                        "Challenges in detecting and responding to security threats",
+                        "Manual security assessment processes"
+                    ],
+                    whenHowUse: "Use Security Command Center when you need centralized security management for your Google Cloud environment. Implement it early in your cloud adoption journey to establish security baselines and continuously monitor for deviations.",
+                    useCase: {
+                        title: "Financial Services Compliance",
+                        description: "A financial institution uses Security Command Center to maintain PCI DSS compliance. The service continuously monitors their cloud environment for misconfigurations, identifies vulnerabilities in their web applications, and provides audit trails for regulatory reporting."
+                    },
+                    architecture: {
+                        title: "Security Command Center Architecture",
+                        elements: [
+                            { id: "user", text: "Security Team", x: 50, y: 50, color: "#4285F4" },
+                            { id: "scc", text: "Security Command Center", x: 50, y: 150, color: "#34A853" },
+                            { id: "assets", text: "Cloud Assets", x: 50, y: 250, color: "#EA4335" },
+                            { id: "findings", text: "Security Findings", x: 250, y: 150, color: "#FBBC05" },
+                            { id: "actions", text: "Remediation Actions", x: 250, y: 250, color: "#4285F4" }
+                        ],
+                        connections: [
+                            { from: "user", to: "scc", width: 200 },
+                            { from: "scc", to: "assets", width: 200 },
+                            { from: "assets", to: "scc", width: 200 },
+                            { from: "scc", to: "findings", width: 150 },
+                            { from: "findings", to: "actions", width: 150 }
+                        ]
+                    }
+                },
+                {
+                    id: "gcp-identity-aware-proxy",
+                    name: "Identity-Aware Proxy (IAP)",
+                    description: "A context-aware access solution that helps secure access to your applications and VMs.",
+                    whatIs: "Identity-Aware Proxy is a Google Cloud service that provides zero-trust access to applications and VMs without requiring a VPN. It verifies user identity and context of the request before granting access.",
+                    whyImportant: "Traditional network-based security models are insufficient in cloud environments. IAP implements a zero-trust approach that verifies identity and context rather than relying solely on network location.",
+                    problemsSolved: [
+                        "VPN complexity and security risks",
+                        "Overly permissive network access controls",
+                        "Difficulty implementing zero-trust architecture",
+                        "Insecure access to internal applications"
+                    ],
+                    whenHowUse: "Use IAP when you need to provide secure access to internal applications without exposing them to the public internet. Implement it for web applications, SSH/RDP access to VMs, and any service that requires context-aware access controls.",
+                    useCase: {
+                        title: "Remote Workforce Security",
+                        description: "A company with a distributed workforce uses IAP to provide secure access to internal web applications. Employees can access these applications from anywhere without a VPN, and access is granted based on user identity, device security status, and location."
+                    },
+                    architecture: {
+                        title: "Identity-Aware Proxy Architecture",
+                        elements: [
+                            { id: "user", text: "User", x: 50, y: 50, color: "#4285F4" },
+                            { id: "iap", text: "IAP", x: 50, y: 150, color: "#34A853" },
+                            { id: "auth", text: "Authentication", x: 250, y: 50, color: "#EA4335" },
+                            { id: "app", text: "Application", x: 50, y: 250, color: "#FBBC05" }
+                        ],
+                        connections: [
+                            { from: "user", to: "iap", width: 150 },
+                            { from: "iap", to: "auth", width: 150 },
+                            { from: "auth", to: "iap", width: 150 },
+                            { from: "iap", to: "app", width: 150 }
+                        ]
+                    }
+                }
+            ],
+            aws: [
+                {
+                    id: "aws-security-hub",
+                    name: "AWS Security Hub",
+                    description: "A comprehensive security service that provides a centralized view of security alerts and compliance status across your AWS accounts.",
+                    whatIs: "AWS Security Hub is a cloud security posture management service that performs security best practice checks, aggregates alerts, and enables automated remediation.",
+                    whyImportant: "With multiple AWS services and accounts, maintaining a unified security posture becomes complex. Security Hub provides centralized visibility and automated compliance checking.",
+                    problemsSolved: [
+                        "Fragmented security visibility across AWS accounts",
+                        "Manual security compliance assessments",
+                        "Difficulty correlating security findings from different services",
+                        "Lack of automated security best practice enforcement"
+                    ],
+                    whenHowUse: "Use AWS Security Hub when you have multiple AWS accounts and need centralized security management. Implement it as part of your AWS Organizations setup to aggregate findings across accounts.",
+                    useCase: {
+                        title: "Multi-Account Enterprise Security",
+                        description: "A large enterprise with dozens of AWS accounts uses Security Hub to maintain a centralized view of their security posture. The service aggregates findings from GuardDuty, Inspector, and Macie, and automatically enforces security best practices across all accounts."
+                    },
+                    architecture: {
+                        title: "AWS Security Hub Architecture",
+                        elements: [
+                            { id: "admin", text: "Security Admin", x: 50, y: 50, color: "#FF9900" },
+                            { id: "hub", text: "Security Hub", x: 50, y: 150, color: "#FF6B00" },
+                            { id: "services", text: "AWS Services", x: 250, y: 50, color: "#232F3E" },
+                            { id: "findings", text: "Consolidated Findings", x: 250, y: 150, color: "#FF9900" },
+                            { id: "actions", text: "Remediation", x: 250, y: 250, color: "#232F3E" }
+                        ],
+                        connections: [
+                            { from: "admin", to: "hub", width: 150 },
+                            { from: "services", to: "hub", width: 150 },
+                            { from: "hub", to: "findings", width: 150 },
+                            { from: "findings", to: "actions", width: 150 }
+                        ]
+                    }
+                },
+                {
+                    id: "aws-guardduty",
+                    name: "Amazon GuardDuty",
+                    description: "A threat detection service that continuously monitors for malicious activity and unauthorized behavior.",
+                    whatIs: "Amazon GuardDuty is a managed threat detection service that uses machine learning, anomaly detection, and integrated threat intelligence to identify potential threats.",
+                    whyImportant: "Traditional security monitoring approaches struggle to keep pace with evolving cloud threats. GuardDuty provides intelligent threat detection without requiring security teams to manage infrastructure.",
+                    problemsSolved: [
+                        "Difficulty detecting compromised EC2 instances",
+                        "Identifying unauthorized API calls",
+                        "Malware and cryptocurrency mining detection",
+                        "Insider threat identification"
+                    ],
+                    whenHowUse: "Use GuardDuty when you need continuous threat monitoring for your AWS environment. Enable it across all AWS accounts and regions to detect suspicious activity in CloudTrail logs, VPC Flow Logs, and DNS logs.",
+                    useCase: {
+                        title: "Cryptocurrency Mining Detection",
+                        description: "A company discovers through GuardDuty that their EC2 instances have been compromised and are running cryptocurrency mining software. GuardDuty detected the unusual CPU utilization patterns and unauthorized outbound connections to known mining pools."
+                    },
+                    architecture: {
+                        title: "Amazon GuardDuty Architecture",
+                        elements: [
+                            { id: "logs", text: "CloudTrail & VPC Logs", x: 50, y: 50, color: "#FF9900" },
+                            { id: "guardduty", text: "GuardDuty", x: 50, y: 150, color: "#FF6B00" },
+                            { id: "threatintel", text: "Threat Intelligence", x: 250, y: 50, color: "#232F3E" },
+                            { id: "findings", text: "Security Findings", x: 250, y: 150, color: "#FF9900" },
+                            { id: "actions", text: "Automated Response", x: 250, y: 250, color: "#232F3E" }
+                        ],
+                        connections: [
+                            { from: "logs", to: "guardduty", width: 150 },
+                            { from: "threatintel", to: "guardduty", width: 150 },
+                            { from: "guardduty", to: "findings", width: 150 },
+                            { from: "findings", to: "actions", width: 150 }
+                        ]
+                    }
+                }
+            ],
+            azure: [
+                {
+                    id: "azure-security-center",
+                    name: "Microsoft Defender for Cloud",
+                    description: "A unified security management system that strengthens your security posture across Azure, hybrid, and multi-cloud environments.",
+                    whatIs: "Microsoft Defender for Cloud (formerly Azure Security Center) is a cloud security posture management tool that provides security recommendations and threat protection across your Azure, on-premises, and multi-cloud resources.",
+                    whyImportant: "Hybrid and multi-cloud environments create security management complexity. Defender for Cloud provides unified visibility and protection across these diverse environments.",
+                    problemsSolved: [
+                        "Lack of unified security visibility across hybrid environments",
+                        "Difficulty implementing security best practices consistently",
+                        "Vulnerability management across diverse resource types",
+                        "Threat detection in multi-cloud deployments"
+                    ],
+                    whenHowUse: "Use Defender for Cloud when you have Azure resources, especially in hybrid or multi-cloud scenarios. Enable it across all subscriptions and configure continuous assessment and threat protection features.",
+                    useCase: {
+                        title: "Hybrid Cloud Security Management",
+                        description: "An organization with both Azure VMs and on-premises servers uses Defender for Cloud to maintain a unified security posture. The service provides security recommendations for both environments, detects threats across the hybrid infrastructure, and helps meet compliance requirements."
+                    },
+                    architecture: {
+                        title: "Microsoft Defender for Cloud Architecture",
+                        elements: [
+                            { id: "resources", text: "Azure Resources", x: 50, y: 50, color: "#0078D4" },
+                            { id: "defender", text: "Defender for Cloud", x: 50, y: 150, color: "#5C2D91" },
+                            { id: "onprem", text: "On-Premises", x: 250, y: 50, color: "#0078D4" },
+                            { id: "recommendations", text: "Security Recommendations", x: 250, y: 150, color: "#5C2D91" },
+                            { id: "alerts", text: "Security Alerts", x: 250, y: 250, color: "#0078D4" }
+                        ],
+                        connections: [
+                            { from: "resources", to: "defender", width: 150 },
+                            { from: "onprem", to: "defender", width: 150 },
+                            { from: "defender", to: "recommendations", width: 150 },
+                            { from: "defender", to: "alerts", width: 150 }
+                        ]
+                    }
+                },
+                {
+                    id: "azure-sentinel",
+                    name: "Microsoft Sentinel",
+                    description: "A scalable, cloud-native SIEM and SOAR solution that provides security analytics and threat intelligence across the enterprise.",
+                    whatIs: "Microsoft Sentinel is a cloud-native security information and event management (SIEM) and security orchestration, automation, and response (SOAR) solution that provides intelligent security analytics across your entire organization.",
+                    whyImportant: "Traditional SIEM solutions struggle with cloud-scale data and lack advanced analytics capabilities. Sentinel leverages Azure's scalability and integrates AI to detect sophisticated threats.",
+                    problemsSolved: [
+                        "SIEM scalability limitations with cloud data volumes",
+                        "Difficulty correlating security events across diverse data sources",
+                        "Manual security investigation and response processes",
+                        "Lack of advanced threat detection capabilities"
+                    ],
+                    whenHowUse: "Use Sentinel as your central SIEM when you need to collect and analyze security data from Azure, other clouds, and on-premises systems. Implement it with custom analytics rules and playbooks for automated response.",
+                    useCase: {
+                        title: "Security Operations Center Modernization",
+                        description: "A company modernizes their security operations by replacing their on-premises SIEM with Microsoft Sentinel. They collect logs from Azure, Office 365, AWS, and their firewall, use built-in machine learning to detect anomalies, and automate response to common threats with playbooks."
+                    },
+                    architecture: {
+                        title: "Microsoft Sentinel Architecture",
+                        elements: [
+                            { id: "datasources", text: "Data Sources", x: 50, y: 50, color: "#0078D4" },
+                            { id: "sentinel", text: "Microsoft Sentinel", x: 50, y: 150, color: "#5C2D91" },
+                            { id: "analytics", text: "AI & Analytics", x: 250, y: 50, color: "#0078D4" },
+                            { id: "incidents", text: "Security Incidents", x: 250, y: 150, color: "#5C2D91" },
+                            { id: "automation", text: "Automated Response", x: 250, y: 250, color: "#0078D4" }
+                        ],
+                        connections: [
+                            { from: "datasources", to: "sentinel", width: 150 },
+                            { from: "sentinel", to: "analytics", width: 150 },
+                            { from: "analytics", to: "sentinel", width: 150 },
+                            { from: "sentinel", to: "incidents", width: 150 },
+                            { from: "incidents", to: "automation", width: 150 }
+                        ]
+                    }
+                }
+            ]
+        };
+
+        // Cross-platform comparison data
+        const comparisonData = [
+            {
+                domain: "Cloud Security Posture Management",
+                gcp: "Security Command Center",
+                aws: "AWS Security Hub",
+                azure: "Microsoft Defender for Cloud"
+            },
+            {
+                domain: "Identity and Access Management",
+                gcp: "Cloud IAM",
+                aws: "AWS IAM",
+                azure: "Azure Active Directory"
+            },
+            {
+                domain: "Web Application Firewall",
+                gcp: "Cloud Armor",
+                aws: "AWS WAF",
+                azure: "Azure Web Application Firewall"
+            },
+            {
+                domain: "Threat Detection",
+                gcp: "Event Threat Detection",
+                aws: "Amazon GuardDuty",
+                azure: "Microsoft Defender threat detection"
+            },
+            {
+                domain: "Secrets Management",
+                gcp: "Secret Manager",
+                aws: "AWS Secrets Manager",
+                azure: "Azure Key Vault"
+            },
+            {
+                domain: "DDoS Protection",
+                gcp: "Cloud Armor",
+                aws: "AWS Shield",
+                azure: "Azure DDoS Protection"
+            },
+            {
+                domain: "SIEM/Security Analytics",
+                gcp: "Chronicle (separate product)",
+                aws: "Amazon Detective",
+                azure: "Microsoft Sentinel"
+            },
+            {
+                domain: "Container Security",
+                gcp: "GKE Security",
+                aws: "Amazon EKS Security",
+                azure: "Azure Kubernetes Service Security"
+            }
+        ];
+
+        // DOM elements
+        const providerButtons = document.querySelectorAll('.provider-btn');
+        const serviceList = document.getElementById('serviceList');
+        const serviceContent = document.getElementById('serviceContent');
+        const comparisonSection = document.getElementById('comparisonSection');
+        const comparisonTableBody = document.getElementById('comparisonTableBody');
+        const progressBar = document.getElementById('progressBar');
+        const welcomeDiagram = document.getElementById('welcomeDiagram');
+
+        // Current state
+        let currentProvider = 'gcp';
+        let currentService = null;
+
+        // Initialize the page
+        function init() {
+            // Set up provider button event listeners
+            providerButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const provider = button.getAttribute('data-provider');
+                    switchProvider(provider);
+                });
+            });
+            
+            // Load initial provider content
+            loadProviderServices(currentProvider);
+            loadComparisonTable();
+            renderWelcomeDiagram();
+            
+            // Set up scroll progress bar
+            window.addEventListener('scroll', updateProgressBar);
+        }
+
+        // Update scroll progress bar
+        function updateProgressBar() {
+            const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (window.scrollY / windowHeight) * 100;
+            progressBar.style.width = scrolled + '%';
+        }
+
+        // Switch between providers
+        function switchProvider(provider) {
+            // Update active button
+            providerButtons.forEach(button => {
+                button.classList.remove('active');
+                if (button.getAttribute('data-provider') === provider) {
+                    button.classList.add('active');
+                }
+            });
+            
+            // Update current provider
+            currentProvider = provider;
+            currentService = null;
+            
+            // Load services for the selected provider
+            loadProviderServices(provider);
+            
+            // Reset service content
+            serviceContent.innerHTML = `
+                <h2 class="service-title">
+                    <i class="fas fa-cloud-shield-alt"></i> Select a Security Service
+                </h2>
+                <p class="service-description">Choose a security service from the sidebar to learn more about it. Each service includes detailed explanations, architecture diagrams, and real-world use cases.</p>
+                
+                <div class="architecture-diagram">
+                    <div class="diagram-title">Cloud Security Ecosystem</div>
+                    <div class="diagram-container" id="welcomeDiagram">
+                        <!-- Welcome diagram will be rendered by JavaScript -->
+                    </div>
+                </div>
+            `;
+            
+            // Re-render welcome diagram
+            setTimeout(() => {
+                renderWelcomeDiagram();
+            }, 100);
+        }
+
+        // Load services for a specific provider
+        function loadProviderServices(provider) {
+            // Clear current service list
+            serviceList.innerHTML = '';
+            
+            // Add services to the list
+            securityServices[provider].forEach(service => {
+                const listItem = document.createElement('li');
+                listItem.className = 'service-item';
+                
+                const icon = document.createElement('div');
+                icon.className = `service-icon ${provider}-icon`;
+                icon.innerHTML = '<i class="fas fa-shield-alt"></i>';
+                
+                const text = document.createElement('span');
+                text.textContent = service.name;
+                
+                listItem.appendChild(icon);
+                listItem.appendChild(text);
+                listItem.setAttribute('data-service-id', service.id);
+                
+                listItem.addEventListener('click', () => {
+                    // Update active service
+                    document.querySelectorAll('.service-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    listItem.classList.add('active');
+                    
+                    // Load service content
+                    loadServiceContent(provider, service.id);
+                });
+                
+                serviceList.appendChild(listItem);
+            });
+        }
+
+        // Load content for a specific service
+        function loadServiceContent(provider, serviceId) {
+            // Find the service
+            const service = securityServices[provider].find(s => s.id === serviceId);
+            
+            if (!service) return;
+            
+            // Update current service
+            currentService = service;
+            
+            // Create service content HTML
+            let badges = '';
+            if (provider === 'gcp') badges = '<span class="gcp-badge"><i class="fab fa-google"></i> GCP</span>';
+            else if (provider === 'aws') badges = '<span class="aws-badge"><i class="fab fa-aws"></i> AWS</span>';
+            else if (provider === 'azure') badges = '<span class="azure-badge"><i class="fab fa-microsoft"></i> Azure</span>';
+            
+            const contentHTML = `
+                <h2 class="service-title">
+                    <i class="fas fa-shield-alt"></i> ${badges} ${service.name}
+                </h2>
+                <p class="service-description">${service.description}</p>
+                
+                <div class="architecture-diagram">
+                    <div class="diagram-title">${service.architecture.title}</div>
+                    <div class="diagram-container" id="architectureDiagram">
+                        <!-- Architecture diagram will be rendered by JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <h3><i class="fas fa-info-circle"></i> What is it?</h3>
+                    <p>${service.whatIs}</p>
+                </div>
+                
+                <div class="info-section">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Why is it important?</h3>
+                    <p>${service.whyImportant}</p>
+                </div>
+                
+                <div class="info-section">
+                    <h3><i class="fas fa-tools"></i> Problems it solves</h3>
+                    <ul>
+                        ${service.problemsSolved.map(problem => `<li>${problem}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                <div class="info-section">
+                    <h3><i class="fas fa-clock"></i> When and how to use it</h3>
+                    <p>${service.whenHowUse}</p>
+                </div>
+                
+                <div class="use-case">
+                    <h4><i class="fas fa-lightbulb"></i> ${service.useCase.title}</h4>
+                    <p>${service.useCase.description}</p>
+                </div>
+            `;
+            
+            // Update the content area
+            serviceContent.innerHTML = contentHTML;
+            
+            // Render architecture diagram
+            setTimeout(() => {
+                renderArchitectureDiagram(service.architecture);
+            }, 100);
+            
+            // Show comparison section
+            comparisonSection.style.display = 'block';
+        }
+
+        // Render architecture diagram
+        function renderArchitectureDiagram(architecture) {
+            const container = document.getElementById('architectureDiagram');
+            container.innerHTML = '';
+            
+            // Create flow elements
+            architecture.elements.forEach((element, index) => {
+                const el = document.createElement('div');
+                el.className = 'flow-element';
+                el.id = element.id;
+                el.textContent = element.text;
+                el.style.backgroundColor = element.color;
+                el.style.left = `${element.x}px`;
+                el.style.top = `${element.y}px`;
+                el.style.animationDelay = `${index * 0.2}s`;
+                container.appendChild(el);
+            });
+            
+            // Create connections
+            architecture.connections.forEach((conn, index) => {
+                const fromEl = document.getElementById(conn.from);
+                const toEl = document.getElementById(conn.to);
+                
+                if (fromEl && toEl) {
+                    const fromRect = fromEl.getBoundingClientRect();
+                    const toRect = toEl.getBoundingClientRect();
+                    const containerRect = container.getBoundingClientRect();
+                    
+                    const fromX = fromRect.left - containerRect.left + fromRect.width;
+                    const fromY = fromRect.top - containerRect.top + fromRect.height / 2;
+                    const toX = toRect.left - containerRect.left;
+                    const toY = toRect.top - containerRect.top + toRect.height / 2;
+                    
+                    // Calculate distance and angle
+                    const dx = toX - fromX;
+                    const dy = toY - fromY;
+                    const length = Math.sqrt(dx * dx + dy * dy);
+                    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                    
+                    // Create line
+                    const line = document.createElement('div');
+                    line.className = 'flow-line';
+                    line.style.left = `${fromX}px`;
+                    line.style.top = `${fromY}px`;
+                    line.style.width = '0px';
+                    line.style.setProperty('--line-width', `${length}px`);
+                    line.style.transform = `rotate(${angle}deg)`;
+                    line.style.animationDelay = `${(architecture.elements.length * 0.2) + (index * 0.3)}s`;
+                    container.appendChild(line);
+                    
+                    // Create arrow
+                    const arrow = document.createElement('div');
+                    arrow.className = 'flow-arrow';
+                    arrow.style.left = `${toX - 10}px`;
+                    arrow.style.top = `${toY - 8}px`;
+                    arrow.style.transform = `rotate(${angle}deg)`;
+                    arrow.style.animationDelay = `${(architecture.elements.length * 0.2) + (index * 0.3) + 1}s`;
+                    container.appendChild(arrow);
+                }
+            });
+        }
+
+        // Render welcome diagram
+        function renderWelcomeDiagram() {
+            const container = document.getElementById('welcomeDiagram');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            const elements = [
+                { id: "user", text: "User", x: 50, y: 50, color: "#4285F4" },
+                { id: "gcp", text: "GCP", x: 50, y: 150, color: "#34A853" },
+                { id: "aws", text: "AWS", x: 250, y: 150, color: "#FF9900" },
+                { id: "azure", text: "Azure", x: 450, y: 150, color: "#0078D4" },
+                { id: "security", text: "Security Services", x: 250, y: 250, color: "#5C2D91" }
+            ];
+            
+            const connections = [
+                { from: "user", to: "gcp", width: 150 },
+                { from: "user", to: "aws", width: 150 },
+                { from: "user", to: "azure", width: 150 },
+                { from: "gcp", to: "security", width: 150 },
+                { from: "aws", to: "security", width: 150 },
+                { from: "azure", to: "security", width: 150 }
+            ];
+            
+            // Create flow elements
+            elements.forEach((element, index) => {
+                const el = document.createElement('div');
+                el.className = 'flow-element';
+                el.id = element.id;
+                el.textContent = element.text;
+                el.style.backgroundColor = element.color;
+                el.style.left = `${element.x}px`;
+                el.style.top = `${element.y}px`;
+                el.style.animationDelay = `${index * 0.2}s`;
+                container.appendChild(el);
+            });
+            
+            // Create connections
+            connections.forEach((conn, index) => {
+                const fromEl = document.getElementById(conn.from);
+                const toEl = document.getElementById(conn.to);
+                
+                if (fromEl && toEl) {
+                    const fromRect = fromEl.getBoundingClientRect();
+                    const toRect = toEl.getBoundingClientRect();
+                    const containerRect = container.getBoundingClientRect();
+                    
+                    const fromX = fromRect.left - containerRect.left + fromRect.width / 2;
+                    const fromY = fromRect.top - containerRect.top + fromRect.height;
+                    const toX = toRect.left - containerRect.left + toRect.width / 2;
+                    const toY = toRect.top - containerRect.top;
+                    
+                    // Calculate distance and angle
+                    const dx = toX - fromX;
+                    const dy = toY - fromY;
+                    const length = Math.sqrt(dx * dx + dy * dy);
+                    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                    
+                    // Create line
+                    const line = document.createElement('div');
+                    line.className = 'flow-line';
+                    line.style.left = `${fromX}px`;
+                    line.style.top = `${fromY}px`;
+                    line.style.width = '0px';
+                    line.style.setProperty('--line-width', `${length}px`);
+                    line.style.transform = `rotate(${angle}deg)`;
+                    line.style.animationDelay = `${(elements.length * 0.2) + (index * 0.3)}s`;
+                    container.appendChild(line);
+                    
+                    // Create arrow
+                    const arrow = document.createElement('div');
+                    arrow.className = 'flow-arrow';
+                    arrow.style.left = `${toX - 10}px`;
+                    arrow.style.top = `${toY - 8}px`;
+                    arrow.style.transform = `rotate(${angle}deg)`;
+                    arrow.style.animationDelay = `${(elements.length * 0.2) + (index * 0.3) + 1}s`;
+                    container.appendChild(arrow);
+                }
+            });
+        }
+
+        // Load the comparison table
+        function loadComparisonTable() {
+            comparisonTableBody.innerHTML = '';
+            
+            comparisonData.forEach(row => {
+                const tableRow = document.createElement('tr');
+                
+                tableRow.innerHTML = `
+                    <td>${row.domain}</td>
+                    <td>${row.gcp}</td>
+                    <td>${row.aws}</td>
+                    <td>${row.azure}</td>
+                `;
+                
+                comparisonTableBody.appendChild(tableRow);
+            });
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

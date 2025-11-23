@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Security: Defense-in-Depth Implementation Guide</title>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --primary: #3b82f6;
+            --accent: #06b6d4;
+            --aws-color: #ff9900;
+            --azure-color: #0078d4;
+            --gcp-color: #4285f4;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --success: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        /* Layout */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        h1 {
+            font-size: 3rem;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section {
+            margin-bottom: 5rem;
+        }
+
+        /* Cards */
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            border-color: var(--accent);
+        }
+
+        /* Steps Timeline */
+        .step {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .step-number {
+            flex-shrink: 0;
+            width: 60px;
+            height: 60px;
+            background: var(--bg-card);
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--accent);
+            z-index: 2;
+        }
+
+        .step::after {
+            content: '';
+            position: absolute;
+            left: 30px;
+            top: 60px;
+            bottom: -50px;
+            width: 2px;
+            background: var(--border);
+            z-index: 1;
+        }
+        
+        .step:last-child::after {
+            display: none;
+        }
+
+        .step-content {
+            flex-grow: 1;
+        }
+
+        .cloud-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .cloud-box {
+            padding: 1rem;
+            border-radius: 8px;
+            background: rgba(0,0,0,0.2);
+            border-left: 4px solid;
+        }
+
+        .aws { border-color: var(--aws-color); }
+        .azure { border-color: var(--azure-color); }
+        .gcp { border-color: var(--gcp-color); }
+        
+        .cloud-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Diagram Container */
+        .diagram-container {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            color: var(--accent);
+            font-weight: 600;
+            background-color: rgba(255,255,255,0.05);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background-color: var(--primary);
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <span class="badge">Cloud Security Architect Series</span>
+            <h1>Defense-in-Depth Strategy</h1>
+            <p style="color: var(--text-muted); font-size: 1.2rem;">
+                A structured, multi-cloud guide to implementing layered security controls for modern applications.
+            </p>
+        </header>
+
+        <section class="section">
+            <h2><i class="fas fa-shield-alt"></i> What is Defense-in-Depth?</h2>
+            <div class="card">
+                <p>
+                    Defense-in-Depth (DiD) is a security strategy that leverages multiple security layers to protect data and information. If one layer fails, the others stand guard. It replaces the old "castle-and-moat" perimeter model with a "Zero Trust" assume-breach mentality.
+                </p>
+                
+                <div class="diagram-container">
+                    <div class="mermaid">
+                        graph LR
+                            A[Attacker] -->|Stops Here| B(Layer 1: Perimeter/Edge)
+                            B -->|Breach| C(Layer 2: Network)
+                            C -->|Breach| D(Layer 3: Identity)
+                            D -->|Breach| E(Layer 4: Host/App)
+                            E -->|Breach| F(Layer 5: Data)
+                            F ---|Target| G[(The Crown Jewels)]
+                            style A fill:#ff4d4d,stroke:#333,stroke-width:2px,color:white
+                            style G fill:#10b981,stroke:#333,stroke-width:2px,color:white
+                            style B fill:#1e293b,stroke:#06b6d4,stroke-width:2px
+                            style C fill:#1e293b,stroke:#06b6d4,stroke-width:2px
+                            style D fill:#1e293b,stroke:#06b6d4,stroke-width:2px
+                            style E fill:#1e293b,stroke:#06b6d4,stroke-width:2px
+                            style F fill:#1e293b,stroke:#06b6d4,stroke-width:2px
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2><i class="fas fa-file-invoice-dollar"></i> The Real-World Scenario</h2>
+            <div class="card">
+                <h3>Project: "FinTech SecureVault"</h3>
+                <p style="margin-bottom: 1rem; color: var(--text-muted);">
+                    We are deploying a 3-tier architecture (Frontend, API Backend, Database) handling credit card data. 
+                    We will implement security from the Edge to the Database.
+                </p>
+                
+                <div class="diagram-container">
+                    <div class="mermaid">
+                        graph TD
+                            User((User)) -->|HTTPS| CDN[Edge/WAF]
+                            CDN --> LB[Load Balancer]
+                            subgraph VPC [Private Network]
+                                LB -->|Public Subnet| Web[Web Tier]
+                                Web -->|Private Subnet| App[App Tier]
+                                App -->|Data Subnet| DB[(Database)]
+                            end
+                            style VPC fill:#f1f5f9,stroke:#333,stroke-dasharray: 5 5
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2><i class="fas fa-layer-group"></i> Step-by-Step Implementation</h2>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content card">
+                    <h3>Layer 1: Edge & Perimeter Security</h3>
+                    <p>Before traffic even hits your servers, filter out the noise. Stop DDoS attacks and common web exploits (SQLi, XSS).</p>
+                    <div class="cloud-grid">
+                        <div class="cloud-box aws">
+                            <span class="cloud-title" style="color: var(--aws-color)">AWS</span>
+                            <strong>AWS Shield</strong> (DDoS) + <strong>AWS WAF</strong> attached to CloudFront.
+                        </div>
+                        <div class="cloud-box azure">
+                            <span class="cloud-title" style="color: var(--azure-color)">Azure</span>
+                            <strong>Azure Front Door</strong> with WAF policies + <strong>DDoS Protection Standard</strong>.
+                        </div>
+                        <div class="cloud-box gcp">
+                            <span class="cloud-title" style="color: var(--gcp-color)">Google Cloud</span>
+                            <strong>Cloud Armor</strong> (WAF/DDoS) attached to Global Load Balancer.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content card">
+                    <h3>Layer 2: Network Segmentation</h3>
+                    <p>Assume the perimeter is breached. Reduce the "Blast Radius" by isolating resources. Only the Load Balancer talks to the Web App. Only the Web App talks to the Database.</p>
+                    <div class="cloud-grid">
+                        <div class="cloud-box aws">
+                            <span class="cloud-title" style="color: var(--aws-color)">AWS</span>
+                            <strong>VPC</strong> with Public/Private Subnets. <strong>Security Groups</strong> (Stateful) acting as instance firewalls. <strong>NACLs</strong> (Stateless) for subnet boundaries.
+                        </div>
+                        <div class="cloud-box azure">
+                            <span class="cloud-title" style="color: var(--azure-color)">Azure</span>
+                            <strong>VNet</strong> segmentation. <strong>Network Security Groups (NSGs)</strong> for filtering traffic. <strong>Application Security Groups (ASGs)</strong> for grouping VMs.
+                        </div>
+                        <div class="cloud-box gcp">
+                            <span class="cloud-title" style="color: var(--gcp-color)">Google Cloud</span>
+                            <strong>VPC Firewall Rules</strong> (Global). Hierarchical firewall policies. Service Controls for API segmentation.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content card">
+                    <h3>Layer 3: Identity & Access (Zero Trust)</h3>
+                    <p>Identity is the new perimeter. Grant Least Privilege access. Never embed keys in code.</p>
+                    <div class="cloud-grid">
+                        <div class="cloud-box aws">
+                            <span class="cloud-title" style="color: var(--aws-color)">AWS</span>
+                            <strong>IAM Roles</strong> attached to EC2/Lambda (no access keys). <strong>Cognito</strong> for user auth. MFA enforced on root.
+                        </div>
+                        <div class="cloud-box azure">
+                            <span class="cloud-title" style="color: var(--azure-color)">Azure</span>
+                            <strong>Entra ID</strong> (formerly AD). <strong>Managed Identities</strong> for Azure resources to talk to SQL/KeyVault without creds.
+                        </div>
+                        <div class="cloud-box gcp">
+                            <span class="cloud-title" style="color: var(--gcp-color)">Google Cloud</span>
+                            <strong>Cloud IAM</strong> with Service Accounts. <strong>Identity-Aware Proxy (IAP)</strong> for SSH/RDP access without VPNs.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content card">
+                    <h3>Layer 4: Data Security (Encryption)</h3>
+                    <p>If they get to the data, make sure it's unreadable. Encrypt at Rest and in Transit.</p>
+                    <div class="cloud-grid">
+                        <div class="cloud-box aws">
+                            <span class="cloud-title" style="color: var(--aws-color)">AWS</span>
+                            <strong>KMS (Key Management Service)</strong>. Use Customer Managed Keys (CMKs) for S3 and EBS. TLS 1.2+ for transit.
+                        </div>
+                        <div class="cloud-box azure">
+                            <span class="cloud-title" style="color: var(--azure-color)">Azure</span>
+                            <strong>Azure Key Vault</strong> for secrets/certs. Transparent Data Encryption (TDE) for SQL.
+                        </div>
+                        <div class="cloud-box gcp">
+                            <span class="cloud-title" style="color: var(--gcp-color)">Google Cloud</span>
+                            <strong>Cloud KMS</strong>. Google encrypts by default, but use CMEK (Customer Managed Encryption Keys) for compliance.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2><i class="fas fa-table"></i> Service Mapping Cheat Sheet</h2>
+            <div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Security Capability</th>
+                            <th>AWS Service</th>
+                            <th>Azure Service</th>
+                            <th>GCP Service</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Identity Store</strong></td>
+                            <td>IAM / Cognito</td>
+                            <td>Entra ID</td>
+                            <td>Cloud Identity / IAM</td>
+                        </tr>
+                        <tr>
+                            <td><strong>DDoS Protection</strong></td>
+                            <td>AWS Shield</td>
+                            <td>DDoS Protection</td>
+                            <td>Cloud Armor</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Key Management</strong></td>
+                            <td>KMS / CloudHSM</td>
+                            <td>Key Vault</td>
+                            <td>Cloud KMS</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Threat Detection</strong></td>
+                            <td>GuardDuty</td>
+                            <td>Microsoft Defender</td>
+                            <td>Security Command Center</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Posture Mgmt (CSPM)</strong></td>
+                            <td>Security Hub</td>
+                            <td>Defender for Cloud</td>
+                            <td>Security Command Center</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <footer style="text-align: center; margin-top: 4rem; color: var(--text-muted);">
+            <p>Generated by your AI Cloud Security Partner | 2025</p>
+            <p><small>Remember: Security is a journey, not a destination. Continuously audit and patch.</small></p>
+        </footer>
+    </div>
+
+    <script>
+        // Initialize Mermaid
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+        });
+    </script>
+</body>
+</html>

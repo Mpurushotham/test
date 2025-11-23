@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Services Cloud Security Architecture</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --gcp-color: #4285F4;
+            --aws-color: #FF9900;
+            --azure-color: #0078D4;
+            --compliant-color: #2ecc71;
+            --noncompliant-color: #e74c3c;
+            --warning-color: #f39c12;
+            --card-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: #34495e;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .usecase-header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .usecase-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.05)"/></svg>');
+            background-size: cover;
+        }
+        
+        .usecase-title {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .usecase-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 800px;
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 2rem;
+        }
+        
+        @media (max-width: 1100px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .problem-section, .solution-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+        }
+        
+        .problem-section:hover, .solution-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f4f8;
+        }
+        
+        .problem-list, .solution-list {
+            list-style: none;
+        }
+        
+        .problem-item, .solution-item {
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            transition: var(--transition);
+        }
+        
+        .problem-item {
+            background: #fff5f5;
+            border-left: 5px solid var(--noncompliant-color);
+        }
+        
+        .problem-item:hover {
+            background: #ffeaea;
+        }
+        
+        .solution-item {
+            background: #f0f9ff;
+            border-left: 5px solid var(--compliant-color);
+        }
+        
+        .solution-item:hover {
+            background: #e1f3ff;
+        }
+        
+        .problem-icon, .solution-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            flex-shrink: 0;
+            font-size: 1.2rem;
+        }
+        
+        .problem-icon {
+            background: var(--noncompliant-color);
+            color: white;
+        }
+        
+        .solution-icon {
+            background: var(--compliant-color);
+            color: white;
+        }
+        
+        .architecture-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 2rem;
+            transition: var(--transition);
+        }
+        
+        .architecture-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .architecture-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.8rem;
+            color: var(--primary-color);
+        }
+        
+        .architecture-container {
+            height: 600px;
+            position: relative;
+            background: #f8f9fa;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .cloud-provider {
+            position: absolute;
+            width: 300px;
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .gcp-cloud {
+            background: linear-gradient(135deg, var(--gcp-color), #34A853);
+            top: 50px;
+            left: 50px;
+        }
+        
+        .aws-cloud {
+            background: linear-gradient(135deg, var(--aws-color), #FF6B00);
+            top: 50px;
+            right: 50px;
+        }
+        
+        .azure-cloud {
+            background: linear-gradient(135deg, var(--azure-color), #5C2D91);
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .security-service {
+            position: absolute;
+            padding: 15px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 200px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        
+        .security-service:hover {
+            transform: scale(1.05);
+            z-index: 10;
+        }
+        
+        .gcp-service {
+            background: var(--gcp-color);
+        }
+        
+        .aws-service {
+            background: var(--aws-color);
+        }
+        
+        .azure-service {
+            background: var(--azure-color);
+        }
+        
+        .compliance-dashboard {
+            position: absolute;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            width: 250px;
+            bottom: 50px;
+            right: 50px;
+            border-top: 5px solid var(--compliant-color);
+        }
+        
+        .compliance-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        
+        .compliant {
+            background: var(--compliant-color);
+        }
+        
+        .noncompliant {
+            background: var(--noncompliant-color);
+        }
+        
+        .warning {
+            background: var(--warning-color);
+        }
+        
+        .data-flow {
+            position: absolute;
+            height: 4px;
+            background: #3498db;
+            transform-origin: left center;
+        }
+        
+        .data-flow-arrow {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-left: 12px solid #3498db;
+        }
+        
+        .implementation-steps {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 2rem;
+        }
+        
+        .steps-timeline {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin: 2rem 0;
+        }
+        
+        .steps-timeline::before {
+            content: '';
+            position: absolute;
+            top: 30px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #e0e0e0;
+            z-index: 1;
+        }
+        
+        .step {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            width: 20%;
+        }
+        
+        .step-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--secondary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .step-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .step-description {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .results-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .result-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: var(--transition);
+        }
+        
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .result-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .compliance-result {
+            color: var(--compliant-color);
+        }
+        
+        .cost-result {
+            color: var(--gcp-color);
+        }
+        
+        .time-result {
+            color: var(--azure-color);
+        }
+        
+        .floating-animation {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+            z-index: 0;
+        }
+        
+        .floating-animation:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .floating-animation:nth-child(2) {
+            top: 60%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(10deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="usecase-header">
+            <div class="floating-animation"></div>
+            <div class="floating-animation"></div>
+            
+            <h1 class="usecase-title">
+                <i class="fas fa-university"></i> Financial Services Cloud Security
+            </h1>
+            <p class="usecase-subtitle">Multi-Cloud Security Architecture for PCI DSS Compliance in Banking Applications</p>
+        </div>
+        
+        <div class="content-grid">
+            <div class="problem-section">
+                <h2 class="section-title">
+                    <i class="fas fa-exclamation-triangle"></i> Security Challenges
+                </h2>
+                <ul class="problem-list">
+                    <li class="problem-item">
+                        <div class="problem-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div>
+                            <h3>PCI DSS Compliance Gaps</h3>
+                            <p>Manual processes for compliance validation leading to audit failures and potential fines</p>
+                        </div>
+                    </li>
+                    <li class="problem-item">
+                        <div class="problem-icon">
+                            <i class="fas fa-user-secret"></i>
+                        </div>
+                        <div>
+                            <h3>Data Exfiltration Risks</h3>
+                            <p>Sensitive customer payment data vulnerable to unauthorized access across multi-cloud environments</p>
+                        </div>
+                    </li>
+                    <li class="problem-item">
+                        <div class="problem-icon">
+                            <i class="fas fa-network-wired"></i>
+                        </div>
+                        <div>
+                            <h3>Fragmented Security Visibility</h3>
+                            <p>No unified view of security posture across GCP, AWS, and Azure workloads</p>
+                        </div>
+                    </li>
+                    <li class="problem-item">
+                        <div class="problem-icon">
+                            <i class="fas fa-bug"></i>
+                        </div>
+                        <div>
+                            <h3>Vulnerability Management</h3>
+                            <p>Delayed detection and remediation of security vulnerabilities in banking applications</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="solution-section">
+                <h2 class="section-title">
+                    <i class="fas fa-check-circle"></i> Cloud Security Solutions
+                </h2>
+                <ul class="solution-list">
+                    <li class="solution-item">
+                        <div class="solution-icon">
+                            <i class="fas fa-cloud"></i>
+                        </div>
+                        <div>
+                            <h3>Centralized Security Management</h3>
+                            <p>Implement cloud-native CSPM tools for continuous compliance monitoring</p>
+                        </div>
+                    </li>
+                    <li class="solution-item">
+                        <div class="solution-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <div>
+                            <h3>Data Protection Controls</h3>
+                            <p>Deploy encryption, tokenization, and data loss prevention across all cloud environments</p>
+                        </div>
+                    </li>
+                    <li class="solution-item">
+                        <div class="solution-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div>
+                            <h3>Unified Threat Detection</h3>
+                            <p>Leverage cloud-native SIEM and threat intelligence for real-time monitoring</p>
+                        </div>
+                    </li>
+                    <li class="solution-item">
+                        <div class="solution-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div>
+                            <h3>Automated Remediation</h3>
+                            <p>Implement security orchestration for automatic response to compliance violations</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="architecture-section">
+            <h2 class="architecture-title">Multi-Cloud Security Architecture</h2>
+            <div class="architecture-container" id="architectureDiagram">
+                <!-- GCP Cloud -->
+                <div class="cloud-provider gcp-cloud">
+                    <h3><i class="fab fa-google"></i> Google Cloud Platform</h3>
+                    <p>Primary Banking Application</p>
+                </div>
+                
+                <!-- GCP Security Services -->
+                <div class="security-service gcp-service" style="top: 150px; left: 100px;">
+                    <i class="fas fa-shield-alt"></i><br>
+                    Security Command Center
+                </div>
+                <div class="security-service gcp-service" style="top: 220px; left: 100px;">
+                    <i class="fas fa-user-lock"></i><br>
+                    Identity-Aware Proxy
+                </div>
+                <div class="security-service gcp-service" style="top: 290px; left: 100px;">
+                    <i class="fas fa-shield-virus"></i><br>
+                    Cloud Armor
+                </div>
+                
+                <!-- AWS Cloud -->
+                <div class="cloud-provider aws-cloud">
+                    <h3><i class="fab fa-aws"></i> Amazon Web Services</h3>
+                    <p>Payment Processing & Analytics</p>
+                </div>
+                
+                <!-- AWS Security Services -->
+                <div class="security-service aws-service" style="top: 150px; right: 100px;">
+                    <i class="fas fa-tachometer-alt"></i><br>
+                    Security Hub
+                </div>
+                <div class="security-service aws-service" style="top: 220px; right: 100px;">
+                    <i class="fas fa-search"></i><br>
+                    GuardDuty
+                </div>
+                <div class="security-service aws-service" style="top: 290px; right: 100px;">
+                    <i class="fas fa-fire"></i><br>
+                    WAF & Shield
+                </div>
+                
+                <!-- Azure Cloud -->
+                <div class="cloud-provider azure-cloud">
+                    <h3><i class="fab fa-microsoft"></i> Microsoft Azure</h3>
+                    <p>Customer Data & Identity Management</p>
+                </div>
+                
+                <!-- Azure Security Services -->
+                <div class="security-service azure-service" style="bottom: 150px; left: 300px;">
+                    <i class="fas fa-cloud"></i><br>
+                    Defender for Cloud
+                </div>
+                <div class="security-service azure-service" style="bottom: 150px; left: 550px;">
+                    <i class="fas fa-chart-line"></i><br>
+                    Microsoft Sentinel
+                </div>
+                <div class="security-service azure-service" style="bottom: 150px; left: 800px;">
+                    <i class="fas fa-key"></i><br>
+                    Key Vault
+                </div>
+                
+                <!-- Compliance Dashboard -->
+                <div class="compliance-dashboard">
+                    <h4><i class="fas fa-tachometer-alt"></i> Compliance Dashboard</h4>
+                    <div class="compliance-status">
+                        <span>PCI DSS Compliance</span>
+                        <span><span class="status-indicator compliant"></span> 98%</span>
+                    </div>
+                    <div class="compliance-status">
+                        <span>Security Findings</span>
+                        <span><span class="status-indicator warning"></span> 12</span>
+                    </div>
+                    <div class="compliance-status">
+                        <span>Remediation Rate</span>
+                        <span><span class="status-indicator compliant"></span> 95%</span>
+                    </div>
+                </div>
+                
+                <!-- Data Flow Lines -->
+                <div class="data-flow" style="top: 100px; left: 350px; width: 0; transform: rotate(0deg);" id="flow1"></div>
+                <div class="data-flow-arrow" style="top: 98px; left: 540px;" id="arrow1"></div>
+                
+                <div class="data-flow" style="top: 100px; left: 750px; width: 0; transform: rotate(0deg);" id="flow2"></div>
+                <div class="data-flow-arrow" style="top: 98px; left: 940px;" id="arrow2"></div>
+                
+                <div class="data-flow" style="top: 400px; left: 450px; width: 0; transform: rotate(0deg);" id="flow3"></div>
+                <div class="data-flow-arrow" style="top: 398px; left: 640px;" id="arrow3"></div>
+            </div>
+        </div>
+        
+        <div class="implementation-steps">
+            <h2 class="section-title">
+                <i class="fas fa-list-ol"></i> Implementation Roadmap
+            </h2>
+            
+            <div class="steps-timeline">
+                <div class="step">
+                    <div class="step-circle">1</div>
+                    <div class="step-title">Assessment</div>
+                    <div class="step-description">Current state analysis & compliance gap assessment</div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">2</div>
+                    <div class="step-title">Design</div>
+                    <div class="step-description">Multi-cloud security architecture planning</div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">3</div>
+                    <div class="step-title">Deploy</div>
+                    <div class="step-description">Security controls implementation across clouds</div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">4</div>
+                    <div class="step-title">Integrate</div>
+                    <div class="step-description">Connect security services & establish workflows</div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">5</div>
+                    <div class="step-title">Automate</div>
+                    <div class="step-description">Remediation automation & continuous compliance</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="results-section">
+            <h2 class="section-title">
+                <i class="fas fa-chart-bar"></i> Business Outcomes
+            </h2>
+            
+            <div class="results-grid">
+                <div class="result-card">
+                    <i class="fas fa-check-circle fa-2x compliance-result"></i>
+                    <div class="result-value compliance-result">98%</div>
+                    <h3>PCI DSS Compliance</h3>
+                    <p>Continuous compliance with automated evidence collection</p>
+                </div>
+                <div class="result-card">
+                    <i class="fas fa-dollar-sign fa-2x cost-result"></i>
+                    <div class="result-value cost-result">65%</div>
+                    <h3>Cost Reduction</h3>
+                    <p>Lower compliance and security operational costs</p>
+                </div>
+                <div class="result-card">
+                    <i class="fas fa-clock fa-2x time-result"></i>
+                    <div class="result-value time-result">80%</div>
+                    <h3>Faster Remediation</h3>
+                    <p>Reduced mean time to detect and respond to threats</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Animate the architecture diagram
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate data flow lines
+            setTimeout(() => {
+                document.getElementById('flow1').style.width = '190px';
+                document.getElementById('flow2').style.width = '190px';
+                document.getElementById('flow3').style.width = '190px';
+            }, 500);
+            
+            // Add interactive elements to security services
+            const securityServices = document.querySelectorAll('.security-service');
+            securityServices.forEach(service => {
+                service.addEventListener('click', function() {
+                    const serviceName = this.textContent.trim();
+                    alert(`Service Details: ${serviceName}\n\nThis security service is part of the multi-cloud compliance architecture. Click "Learn More" in the main tutorial for detailed information.`);
+                });
+            });
+            
+            // Animate step circles on scroll
+            const observerOptions = {
+                threshold: 0.5,
+                rootMargin: '0px 0px -100px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animation = 'pulse 0.6s ease-in-out';
+                        setTimeout(() => {
+                            entry.target.style.animation = '';
+                        }, 600);
+                    }
+                });
+            }, observerOptions);
+            
+            document.querySelectorAll('.step-circle').forEach(circle => {
+                observer.observe(circle);
+            });
+        });
+        
+        // Add CSS for pulse animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+                100% { transform: scale(1); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

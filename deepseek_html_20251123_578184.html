@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Security Tutorial: GCP, AWS, Azure</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --gcp-color: #4285F4;
+            --aws-color: #FF9900;
+            --azure-color: #0078D4;
+            --light-color: #ecf0f1;
+            --dark-color: #34495e;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            margin-bottom: 2rem;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .provider-selector {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .provider-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+        }
+        
+        .provider-btn.gcp {
+            background-color: var(--gcp-color);
+        }
+        
+        .provider-btn.aws {
+            background-color: var(--aws-color);
+        }
+        
+        .provider-btn.azure {
+            background-color: var(--azure-color);
+        }
+        
+        .provider-btn:hover, .provider-btn.active {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .content-area {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+        }
+        
+        .sidebar {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            height: fit-content;
+        }
+        
+        .service-list {
+            list-style: none;
+        }
+        
+        .service-item {
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-left: 4px solid transparent;
+        }
+        
+        .service-item:hover {
+            background-color: var(--light-color);
+        }
+        
+        .service-item.active {
+            background-color: var(--light-color);
+            border-left-color: var(--secondary-color);
+            font-weight: 600;
+        }
+        
+        .main-content {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .service-title {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--light-color);
+            padding-bottom: 10px;
+        }
+        
+        .service-description {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+        
+        .info-section {
+            margin-bottom: 2rem;
+        }
+        
+        .info-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .info-section h3 i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .info-section p, .info-section ul {
+            margin-bottom: 1rem;
+        }
+        
+        .info-section ul {
+            padding-left: 20px;
+        }
+        
+        .info-section li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .use-case {
+            background-color: var(--light-color);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+        }
+        
+        .use-case h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+        }
+        
+        .comparison-table th, .comparison-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .comparison-table th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .comparison-table tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .gcp-badge {
+            background-color: var(--gcp-color);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-right: 5px;
+        }
+        
+        .aws-badge {
+            background-color: var(--aws-color);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-right: 5px;
+        }
+        
+        .azure-badge {
+            background-color: var(--azure-color);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-right: 5px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 1.5rem 0;
+            color: var(--dark-color);
+            border-top: 1px solid #ddd;
+        }
+        
+        @media (max-width: 768px) {
+            .content-area {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                order: 2;
+            }
+            
+            .main-content {
+                order: 1;
+            }
+            
+            .provider-selector {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .provider-btn {
+                width: 80%;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Cloud Security Services Tutorial</h1>
+            <p class="subtitle">Comprehensive Guide to GCP, AWS, and Azure Security Services</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="provider-selector">
+            <button class="provider-btn gcp active" data-provider="gcp">Google Cloud Platform (GCP)</button>
+            <button class="provider-btn aws" data-provider="aws">Amazon Web Services (AWS)</button>
+            <button class="provider-btn azure" data-provider="azure">Microsoft Azure</button>
+        </div>
+        
+        <div class="content-area">
+            <div class="sidebar">
+                <h2>Security Services</h2>
+                <ul class="service-list" id="serviceList">
+                    <!-- Services will be populated by JavaScript -->
+                </ul>
+            </div>
+            
+            <div class="main-content">
+                <div id="serviceContent">
+                    <!-- Content will be populated by JavaScript -->
+                    <h2 class="service-title">Select a Security Service</h2>
+                    <p class="service-description">Choose a provider and then select a security service from the sidebar to learn more about it.</p>
+                </div>
+                
+                <div class="info-section" id="comparisonSection" style="display: none;">
+                    <h2>Cross-Platform Comparison</h2>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Security Domain</th>
+                                <th>GCP</th>
+                                <th>AWS</th>
+                                <th>Azure</th>
+                            </tr>
+                        </thead>
+                        <tbody id="comparisonTableBody">
+                            <!-- Content will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>Cloud Security Tutorial &copy; 2023 | Expert Guide to GCP, AWS, and Azure Security Services</p>
+        </div>
+    </footer>
+
+    <script>
+        // Data structure for all security services
+        const securityServices = {
+            gcp: [
+                {
+                    id: "gcp-security-command-center",
+                    name: "Security Command Center",
+                    description: "Google Cloud's security and risk management platform that helps you prevent, detect, and respond to threats.",
+                    whatIs: "Security Command Center is a comprehensive security management and data risk platform for Google Cloud. It provides visibility into your cloud assets, identifies misconfigurations and vulnerabilities, and helps detect threats.",
+                    whyImportant: "As organizations scale in the cloud, maintaining visibility and control over security posture becomes challenging. Security Command Center provides a centralized view of security across your Google Cloud environment.",
+                    problemsSolved: [
+                        "Lack of visibility into cloud assets and their security posture",
+                        "Difficulty identifying misconfigurations and compliance violations",
+                        "Challenges in detecting and responding to security threats",
+                        "Manual security assessment processes"
+                    ],
+                    whenHowUse: "Use Security Command Center when you need centralized security management for your Google Cloud environment. Implement it early in your cloud adoption journey to establish security baselines and continuously monitor for deviations.",
+                    useCase: {
+                        title: "Financial Services Compliance",
+                        description: "A financial institution uses Security Command Center to maintain PCI DSS compliance. The service continuously monitors their cloud environment for misconfigurations, identifies vulnerabilities in their web applications, and provides audit trails for regulatory reporting."
+                    }
+                },
+                {
+                    id: "gcp-identity-aware-proxy",
+                    name: "Identity-Aware Proxy (IAP)",
+                    description: "A context-aware access solution that helps secure access to your applications and VMs.",
+                    whatIs: "Identity-Aware Proxy is a Google Cloud service that provides zero-trust access to applications and VMs without requiring a VPN. It verifies user identity and context of the request before granting access.",
+                    whyImportant: "Traditional network-based security models are insufficient in cloud environments. IAP implements a zero-trust approach that verifies identity and context rather than relying solely on network location.",
+                    problemsSolved: [
+                        "VPN complexity and security risks",
+                        "Overly permissive network access controls",
+                        "Difficulty implementing zero-trust architecture",
+                        "Insecure access to internal applications"
+                    ],
+                    whenHowUse: "Use IAP when you need to provide secure access to internal applications without exposing them to the public internet. Implement it for web applications, SSH/RDP access to VMs, and any service that requires context-aware access controls.",
+                    useCase: {
+                        title: "Remote Workforce Security",
+                        description: "A company with a distributed workforce uses IAP to provide secure access to internal web applications. Employees can access these applications from anywhere without a VPN, and access is granted based on user identity, device security status, and location."
+                    }
+                },
+                {
+                    id: "gcp-cloud-armor",
+                    name: "Cloud Armor",
+                    description: "A DDoS and web application firewall (WAF) service that helps protect your applications from threats.",
+                    whatIs: "Cloud Armor is Google's distributed denial-of-service (DDoS) defense and web application firewall (WAF) service. It provides protection at the network edge for applications running on Google Cloud.",
+                    whyImportant: "Web applications are frequent targets for DDoS attacks and application-layer exploits. Cloud Armor provides enterprise-grade protection against these threats with Google's global infrastructure.",
+                    problemsSolved: [
+                        "DDoS attacks that can disrupt application availability",
+                        "OWASP Top 10 web application vulnerabilities",
+                        "Geographic-based access control requirements",
+                        "Bot management and mitigation"
+                    ],
+                    whenHowUse: "Use Cloud Armor when you have public-facing web applications that need protection against DDoS attacks and application-layer threats. Implement it as part of your load balancing configuration for Google Cloud HTTP(S) load balancers.",
+                    useCase: {
+                        title: "E-commerce Platform Protection",
+                        description: "An e-commerce platform uses Cloud Armor to protect their website during high-traffic events like Black Friday. The service mitigates DDoS attacks, blocks malicious bots attempting to scrape pricing data, and prevents SQL injection attacks."
+                    }
+                },
+                {
+                    id: "gcp-vpc-service-controls",
+                    name: "VPC Service Controls",
+                    description: "Helps mitigate data exfiltration risks by creating security perimeters around Google Cloud resources.",
+                    whatIs: "VPC Service Controls extend the security of your Virtual Private Cloud (VPC) to Google-managed services. They create a security perimeter that helps prevent data exfiltration from supported Google Cloud services.",
+                    whyImportant: "Even with IAM policies, data in cloud services can be vulnerable to exfiltration through various vectors. VPC Service Controls provide an additional layer of defense by restricting data movement across security boundaries.",
+                    problemsSolved: [
+                        "Data exfiltration from cloud storage services",
+                        "Unauthorized data copying between projects",
+                        "Insider threat risks to sensitive data",
+                        "Compliance requirements for data isolation"
+                    ],
+                    whenHowUse: "Use VPC Service Controls when you need to protect sensitive data in Google-managed services like Cloud Storage, BigQuery, and Pub/Sub. Implement them to create security perimeters around projects containing sensitive data.",
+                    useCase: {
+                        title: "Healthcare Data Protection",
+                        description: "A healthcare organization uses VPC Service Controls to protect patient health information (PHI) stored in BigQuery and Cloud Storage. The security perimeter prevents data from being copied to unauthorized projects or exported to external cloud storage, helping maintain HIPAA compliance."
+                    }
+                }
+            ],
+            aws: [
+                {
+                    id: "aws-security-hub",
+                    name: "AWS Security Hub",
+                    description: "A comprehensive security service that provides a centralized view of security alerts and compliance status across your AWS accounts.",
+                    whatIs: "AWS Security Hub is a cloud security posture management service that performs security best practice checks, aggregates alerts, and enables automated remediation.",
+                    whyImportant: "With multiple AWS services and accounts, maintaining a unified security posture becomes complex. Security Hub provides centralized visibility and automated compliance checking.",
+                    problemsSolved: [
+                        "Fragmented security visibility across AWS accounts",
+                        "Manual security compliance assessments",
+                        "Difficulty correlating security findings from different services",
+                        "Lack of automated security best practice enforcement"
+                    ],
+                    whenHowUse: "Use AWS Security Hub when you have multiple AWS accounts and need centralized security management. Implement it as part of your AWS Organizations setup to aggregate findings across accounts.",
+                    useCase: {
+                        title: "Multi-Account Enterprise Security",
+                        description: "A large enterprise with dozens of AWS accounts uses Security Hub to maintain a centralized view of their security posture. The service aggregates findings from GuardDuty, Inspector, and Macie, and automatically enforces security best practices across all accounts."
+                    }
+                },
+                {
+                    id: "aws-guardduty",
+                    name: "Amazon GuardDuty",
+                    description: "A threat detection service that continuously monitors for malicious activity and unauthorized behavior.",
+                    whatIs: "Amazon GuardDuty is a managed threat detection service that uses machine learning, anomaly detection, and integrated threat intelligence to identify potential threats.",
+                    whyImportant: "Traditional security monitoring approaches struggle to keep pace with evolving cloud threats. GuardDuty provides intelligent threat detection without requiring security teams to manage infrastructure.",
+                    problemsSolved: [
+                        "Difficulty detecting compromised EC2 instances",
+                        "Identifying unauthorized API calls",
+                        "Malware and cryptocurrency mining detection",
+                        "Insider threat identification"
+                    ],
+                    whenHowUse: "Use GuardDuty when you need continuous threat monitoring for your AWS environment. Enable it across all AWS accounts and regions to detect suspicious activity in CloudTrail logs, VPC Flow Logs, and DNS logs.",
+                    useCase: {
+                        title: "Cryptocurrency Mining Detection",
+                        description: "A company discovers through GuardDuty that their EC2 instances have been compromised and are running cryptocurrency mining software. GuardDuty detected the unusual CPU utilization patterns and unauthorized outbound connections to known mining pools."
+                    }
+                },
+                {
+                    id: "aws-waf",
+                    name: "AWS WAF",
+                    description: "A web application firewall that helps protect web applications from common web exploits.",
+                    whatIs: "AWS WAF is a web application firewall that lets you monitor HTTP(S) requests to your web applications and control access based on rules that you define.",
+                    whyImportant: "Web applications are vulnerable to various attacks like SQL injection, XSS, and bot traffic. AWS WAF provides flexible protection that can be customized for your specific application needs.",
+                    problemsSolved: [
+                        "SQL injection attacks",
+                        "Cross-site scripting (XSS) vulnerabilities",
+                        "Bad bot traffic and scraping",
+                        "Geographic restrictions for content delivery"
+                    ],
+                    whenHowUse: "Use AWS WAF when you have web applications exposed to the internet via CloudFront, Application Load Balancer, or API Gateway. Implement custom rules tailored to your application's specific security requirements.",
+                    useCase: {
+                        title: "API Protection",
+                        description: "A company uses AWS WAF to protect their REST APIs from abuse and attacks. They implement rate-based rules to prevent DDoS attacks, SQL injection rules to block malicious payloads, and custom rules to detect and block suspicious API patterns."
+                    }
+                },
+                {
+                    id: "aws-iam",
+                    name: "AWS Identity and Access Management (IAM)",
+                    description: "The core service for controlling access to AWS services and resources.",
+                    whatIs: "AWS IAM enables you to manage access to AWS services and resources securely. You can create and manage AWS users and groups, and use permissions to allow and deny their access to AWS resources.",
+                    whyImportant: "Proper identity and access management is foundational to cloud security. IAM provides the granular controls needed to implement the principle of least privilege across your AWS environment.",
+                    problemsSolved: [
+                        "Overly permissive access to AWS resources",
+                        "Lack of individual accountability through shared credentials",
+                        "Difficulty managing access across multiple teams and applications",
+                        "Compliance requirements for access controls"
+                    ],
+                    whenHowUse: "Use IAM from day one in your AWS environment. Implement least privilege access, use roles for EC2 instances and Lambda functions, enable MFA for all users, and regularly review permissions.",
+                    useCase: {
+                        title: "Least Privilege Implementation",
+                        description: "A company implements fine-grained IAM policies that grant developers access only to the specific AWS resources needed for their projects. They use IAM roles for EC2 instances instead of storing access keys, and require MFA for all human users."
+                    }
+                }
+            ],
+            azure: [
+                {
+                    id: "azure-security-center",
+                    name: "Microsoft Defender for Cloud",
+                    description: "A unified security management system that strengthens your security posture across Azure, hybrid, and multi-cloud environments.",
+                    whatIs: "Microsoft Defender for Cloud (formerly Azure Security Center) is a cloud security posture management tool that provides security recommendations and threat protection across your Azure, on-premises, and multi-cloud resources.",
+                    whyImportant: "Hybrid and multi-cloud environments create security management complexity. Defender for Cloud provides unified visibility and protection across these diverse environments.",
+                    problemsSolved: [
+                        "Lack of unified security visibility across hybrid environments",
+                        "Difficulty implementing security best practices consistently",
+                        "Vulnerability management across diverse resource types",
+                        "Threat detection in multi-cloud deployments"
+                    ],
+                    whenHowUse: "Use Defender for Cloud when you have Azure resources, especially in hybrid or multi-cloud scenarios. Enable it across all subscriptions and configure continuous assessment and threat protection features.",
+                    useCase: {
+                        title: "Hybrid Cloud Security Management",
+                        description: "An organization with both Azure VMs and on-premises servers uses Defender for Cloud to maintain a unified security posture. The service provides security recommendations for both environments, detects threats across the hybrid infrastructure, and helps meet compliance requirements."
+                    }
+                },
+                {
+                    id: "azure-sentinel",
+                    name: "Microsoft Sentinel",
+                    description: "A scalable, cloud-native SIEM and SOAR solution that provides security analytics and threat intelligence across the enterprise.",
+                    whatIs: "Microsoft Sentinel is a cloud-native security information and event management (SIEM) and security orchestration, automation, and response (SOAR) solution that provides intelligent security analytics across your entire organization.",
+                    whyImportant: "Traditional SIEM solutions struggle with cloud-scale data and lack advanced analytics capabilities. Sentinel leverages Azure's scalability and integrates AI to detect sophisticated threats.",
+                    problemsSolved: [
+                        "SIEM scalability limitations with cloud data volumes",
+                        "Difficulty correlating security events across diverse data sources",
+                        "Manual security investigation and response processes",
+                        "Lack of advanced threat detection capabilities"
+                    ],
+                    whenHowUse: "Use Sentinel as your central SIEM when you need to collect and analyze security data from Azure, other clouds, and on-premises systems. Implement it with custom analytics rules and playbooks for automated response.",
+                    useCase: {
+                        title: "Security Operations Center Modernization",
+                        description: "A company modernizes their security operations by replacing their on-premises SIEM with Microsoft Sentinel. They collect logs from Azure, Office 365, AWS, and their firewall, use built-in machine learning to detect anomalies, and automate response to common threats with playbooks."
+                    }
+                },
+                {
+                    id: "azure-key-vault",
+                    name: "Azure Key Vault",
+                    description: "A tool for securely storing and accessing secrets, such as API keys, passwords, certificates, and cryptographic keys.",
+                    whatIs: "Azure Key Vault is a cloud service for securely storing and accessing secrets. It provides centralized secrets management with tight access control and comprehensive logging.",
+                    whyImportant: "Hardcoding secrets in application code is a significant security risk. Key Vault provides a secure, centralized way to manage secrets with proper access controls and auditing.",
+                    problemsSolved: [
+                        "Secrets hardcoded in application code",
+                        "Difficulty rotating secrets across distributed applications",
+                        "Lack of audit trails for secret access",
+                        "Insecure storage of certificates and cryptographic keys"
+                    ],
+                    whenHowUse: "Use Key Vault whenever your applications need to use secrets, keys, or certificates. Integrate it with your applications using managed identities for secure access without storing credentials.",
+                    useCase: {
+                        title: "Application Secrets Management",
+                        description: "A development team uses Azure Key Vault to store database connection strings, API keys, and SSL certificates for their web application. The application accesses these secrets using managed identity, eliminating the need to store credentials in configuration files."
+                    }
+                },
+                {
+                    id: "azure-ad",
+                    name: "Azure Active Directory",
+                    description: "Microsoft's cloud-based identity and access management service that helps your employees sign in and access resources.",
+                    whatIs: "Azure Active Directory (Azure AD) is Microsoft's enterprise identity service that provides single sign-on, multi-factor authentication, and conditional access to protect your users from 99.9% of cybersecurity attacks.",
+                    whyImportant: "Identity is the new perimeter in cloud security. Azure AD provides the foundation for zero-trust security with strong authentication and conditional access policies.",
+                    problemsSolved: [
+                        "Password-related security breaches",
+                        "Difficulty managing access across multiple applications",
+                        "Lack of conditional access controls",
+                        "Identity federation challenges"
+                    ],
+                    whenHowUse: "Use Azure AD as your primary identity provider for Azure resources, Office 365, and custom applications. Implement conditional access policies, multi-factor authentication, and identity protection features.",
+                    useCase: {
+                        title: "Zero-Trust Implementation",
+                        description: "An organization implements a zero-trust security model using Azure AD. They require MFA for all access, use conditional access to block sign-ins from risky locations, and implement privileged identity management for administrative accounts."
+                    }
+                }
+            ]
+        };
+
+        // Cross-platform comparison data
+        const comparisonData = [
+            {
+                domain: "Cloud Security Posture Management",
+                gcp: "Security Command Center",
+                aws: "AWS Security Hub",
+                azure: "Microsoft Defender for Cloud"
+            },
+            {
+                domain: "Identity and Access Management",
+                gcp: "Cloud IAM",
+                aws: "AWS IAM",
+                azure: "Azure Active Directory"
+            },
+            {
+                domain: "Web Application Firewall",
+                gcp: "Cloud Armor",
+                aws: "AWS WAF",
+                azure: "Azure Web Application Firewall"
+            },
+            {
+                domain: "Threat Detection",
+                gcp: "Event Threat Detection",
+                aws: "Amazon GuardDuty",
+                azure: "Microsoft Defender threat detection"
+            },
+            {
+                domain: "Secrets Management",
+                gcp: "Secret Manager",
+                aws: "AWS Secrets Manager",
+                azure: "Azure Key Vault"
+            },
+            {
+                domain: "DDoS Protection",
+                gcp: "Cloud Armor",
+                aws: "AWS Shield",
+                azure: "Azure DDoS Protection"
+            },
+            {
+                domain: "SIEM/Security Analytics",
+                gcp: "Chronicle (separate product)",
+                aws: "Amazon Detective",
+                azure: "Microsoft Sentinel"
+            },
+            {
+                domain: "Container Security",
+                gcp: "GKE Security",
+                aws: "Amazon EKS Security",
+                azure: "Azure Kubernetes Service Security"
+            }
+        ];
+
+        // DOM elements
+        const providerButtons = document.querySelectorAll('.provider-btn');
+        const serviceList = document.getElementById('serviceList');
+        const serviceContent = document.getElementById('serviceContent');
+        const comparisonSection = document.getElementById('comparisonSection');
+        const comparisonTableBody = document.getElementById('comparisonTableBody');
+
+        // Current state
+        let currentProvider = 'gcp';
+        let currentService = null;
+
+        // Initialize the page
+        function init() {
+            // Set up provider button event listeners
+            providerButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const provider = button.getAttribute('data-provider');
+                    switchProvider(provider);
+                });
+            });
+            
+            // Load initial provider content
+            loadProviderServices(currentProvider);
+            loadComparisonTable();
+        }
+
+        // Switch between providers
+        function switchProvider(provider) {
+            // Update active button
+            providerButtons.forEach(button => {
+                button.classList.remove('active');
+                if (button.getAttribute('data-provider') === provider) {
+                    button.classList.add('active');
+                }
+            });
+            
+            // Update current provider
+            currentProvider = provider;
+            currentService = null;
+            
+            // Load services for the selected provider
+            loadProviderServices(provider);
+            
+            // Reset service content
+            serviceContent.innerHTML = `
+                <h2 class="service-title">Select a Security Service</h2>
+                <p class="service-description">Choose a security service from the sidebar to learn more about it.</p>
+            `;
+        }
+
+        // Load services for a specific provider
+        function loadProviderServices(provider) {
+            // Clear current service list
+            serviceList.innerHTML = '';
+            
+            // Add services to the list
+            securityServices[provider].forEach(service => {
+                const listItem = document.createElement('li');
+                listItem.className = 'service-item';
+                listItem.textContent = service.name;
+                listItem.setAttribute('data-service-id', service.id);
+                
+                listItem.addEventListener('click', () => {
+                    // Update active service
+                    document.querySelectorAll('.service-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    listItem.classList.add('active');
+                    
+                    // Load service content
+                    loadServiceContent(provider, service.id);
+                });
+                
+                serviceList.appendChild(listItem);
+            });
+        }
+
+        // Load content for a specific service
+        function loadServiceContent(provider, serviceId) {
+            // Find the service
+            const service = securityServices[provider].find(s => s.id === serviceId);
+            
+            if (!service) return;
+            
+            // Update current service
+            currentService = service;
+            
+            // Create service content HTML
+            let badges = '';
+            if (provider === 'gcp') badges = '<span class="gcp-badge">GCP</span>';
+            else if (provider === 'aws') badges = '<span class="aws-badge">AWS</span>';
+            else if (provider === 'azure') badges = '<span class="azure-badge">Azure</span>';
+            
+            const contentHTML = `
+                <h2 class="service-title">${badges} ${service.name}</h2>
+                <p class="service-description">${service.description}</p>
+                
+                <div class="info-section">
+                    <h3><i>🔍</i> What is it?</h3>
+                    <p>${service.whatIs}</p>
+                </div>
+                
+                <div class="info-section">
+                    <h3><i>❗</i> Why is it important?</h3>
+                    <p>${service.whyImportant}</p>
+                </div>
+                
+                <div class="info-section">
+                    <h3><i>🔧</i> Problems it solves</h3>
+                    <ul>
+                        ${service.problemsSolved.map(problem => `<li>${problem}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                <div class="info-section">
+                    <h3><i>🕒</i> When and how to use it</h3>
+                    <p>${service.whenHowUse}</p>
+                </div>
+                
+                <div class="use-case">
+                    <h4>${service.useCase.title}</h4>
+                    <p>${service.useCase.description}</p>
+                </div>
+            `;
+            
+            // Update the content area
+            serviceContent.innerHTML = contentHTML;
+            
+            // Show comparison section
+            comparisonSection.style.display = 'block';
+        }
+
+        // Load the comparison table
+        function loadComparisonTable() {
+            comparisonTableBody.innerHTML = '';
+            
+            comparisonData.forEach(row => {
+                const tableRow = document.createElement('tr');
+                
+                tableRow.innerHTML = `
+                    <td>${row.domain}</td>
+                    <td>${row.gcp}</td>
+                    <td>${row.aws}</td>
+                    <td>${row.azure}</td>
+                `;
+                
+                comparisonTableBody.appendChild(tableRow);
+            });
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

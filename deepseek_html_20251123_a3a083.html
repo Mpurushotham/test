@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevSecOps & Application Security</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --owasp-color: #e74c3c;
+            --devsecops-color: #9b59b6;
+            --secure-coding-color: #2ecc71;
+            --tools-color: #f39c12;
+            --card-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: #34495e;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.05)"/></svg>');
+            background-size: cover;
+        }
+        
+        .header-title {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .header-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 800px;
+        }
+        
+        .tabs-container {
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+        }
+        
+        .tabs-header {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .tab-btn {
+            padding: 20px 30px;
+            border: none;
+            background: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .tab-btn.active {
+            background: white;
+            border-bottom: 3px solid var(--secondary-color);
+            color: var(--secondary-color);
+        }
+        
+        .tab-btn:hover:not(.active) {
+            background: #e9ecef;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 30px;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f4f8;
+        }
+        
+        .owasp-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 2rem;
+        }
+        
+        .owasp-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            transition: var(--transition);
+            border-left: 5px solid var(--owasp-color);
+        }
+        
+        .owasp-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .owasp-rank {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--owasp-color);
+            margin-bottom: 10px;
+        }
+        
+        .owasp-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .owasp-description {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .owasp-example {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+        
+        .owasp-prevention {
+            background: #e8f5e8;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .devsecops-pipeline {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            margin-bottom: 2rem;
+        }
+        
+        .pipeline-stage {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .stage-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--devsecops-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .stage-content {
+            flex: 1;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--devsecops-color);
+        }
+        
+        .stage-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .tool-item {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+        
+        .tool-item:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        .secure-coding-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .principle-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            transition: var(--transition);
+            border-top: 5px solid var(--secure-coding-color);
+            text-align: center;
+        }
+        
+        .principle-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .principle-icon {
+            font-size: 2.5rem;
+            color: var(--secure-coding-color);
+            margin-bottom: 15px;
+        }
+        
+        .principle-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .principle-description {
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        .tools-matrix {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .tool-category {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            border-top: 5px solid var(--tools-color);
+        }
+        
+        .category-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .tool-list {
+            list-style: none;
+        }
+        
+        .tool-list-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .tool-list-item:last-child {
+            border-bottom: none;
+        }
+        
+        .tool-badge {
+            background: var(--tools-color);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .owasp-badge {
+            background: var(--owasp-color);
+        }
+        
+        .devsecops-badge {
+            background: var(--devsecops-color);
+        }
+        
+        .coding-badge {
+            background: var(--secure-coding-color);
+        }
+        
+        .floating-animation {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+            z-index: 0;
+        }
+        
+        .floating-animation:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .floating-animation:nth-child(2) {
+            top: 60%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(10deg);
+            }
+        }
+        
+        .risk-meter {
+            width: 100%;
+            height: 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .risk-level {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+        
+        .risk-high {
+            background: #e74c3c;
+            width: 80%;
+        }
+        
+        .risk-medium {
+            background: #f39c12;
+            width: 60%;
+        }
+        
+        .risk-low {
+            background: #2ecc71;
+            width: 30%;
+        }
+        
+        .integration-diagram {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            margin: 2rem 0;
+        }
+        
+        .diagram-title {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+        
+        .pipeline-visual {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            height: 120px;
+        }
+        
+        .pipeline-stage-visual {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .stage-circle {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: var(--devsecops-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .stage-label {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .pipeline-connector {
+            position: absolute;
+            top: 35px;
+            left: 85px;
+            right: 85px;
+            height: 4px;
+            background: var(--devsecops-color);
+            z-index: 1;
+        }
+        
+        .security-tools-overlay {
+            position: absolute;
+            top: 70px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+        }
+        
+        .security-tool {
+            background: var(--tools-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            .tabs-header {
+                flex-direction: column;
+            }
+            
+            .pipeline-stage {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .pipeline-visual {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .pipeline-connector {
+                display: none;
+            }
+            
+            .security-tools-overlay {
+                position: static;
+                flex-direction: column;
+                gap: 10px;
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="floating-animation"></div>
+            <div class="floating-animation"></div>
+            
+            <h1 class="header-title">
+                <i class="fas fa-shield-alt"></i> Application Security & DevSecOps
+            </h1>
+            <p class="header-subtitle">OWASP Standards, Secure Coding Practices, and DevSecOps Pipeline with Security Tool Integration</p>
+        </div>
+        
+        <div class="tabs-container">
+            <div class="tabs-header">
+                <button class="tab-btn active" data-tab="owasp">
+                    <i class="fas fa-bug"></i> OWASP Top 10
+                </button>
+                <button class="tab-btn" data-tab="devsecops">
+                    <i class="fas fa-code-branch"></i> DevSecOps Pipeline
+                </button>
+                <button class="tab-btn" data-tab="coding">
+                    <i class="fas fa-laptop-code"></i> Secure Coding
+                </button>
+                <button class="tab-btn" data-tab="tools">
+                    <i class="fas fa-tools"></i> Security Tools
+                </button>
+            </div>
+            
+            <div class="tab-content active" id="owasp-tab">
+                <h2 class="section-title">
+                    <i class="fas fa-exclamation-triangle"></i> OWASP Top 10 Security Risks
+                </h2>
+                
+                <div class="owasp-grid">
+                    <div class="owasp-card">
+                        <div class="owasp-rank">A01:2021</div>
+                        <h3 class="owasp-title">Broken Access Control</h3>
+                        <div class="risk-meter">
+                            <div class="risk-level risk-high"></div>
+                        </div>
+                        <p class="owasp-description">Restrictions on what authenticated users are allowed to do are not properly enforced.</p>
+                        <div class="owasp-example">
+                            // Vulnerability: Direct object reference<br>
+                            http://app.com/user/123/profile
+                        </div>
+                        <div class="owasp-prevention">
+                            <strong>Prevention:</strong> Implement proper authorization checks, use indirect object references
+                        </div>
+                    </div>
+                    
+                    <div class="owasp-card">
+                        <div class="owasp-rank">A02:2021</div>
+                        <h3 class="owasp-title">Cryptographic Failures</h3>
+                        <div class="risk-meter">
+                            <div class="risk-level risk-high"></div>
+                        </div>
+                        <p class="owasp-description">Failure to protect sensitive data through encryption and proper key management.</p>
+                        <div class="owasp-example">
+                            // Vulnerability: Plaintext passwords<br>
+                            INSERT INTO users VALUES ('admin', 'password123')
+                        </div>
+                        <div class="owasp-prevention">
+                            <strong>Prevention:</strong> Use strong encryption, secure key management, TLS everywhere
+                        </div>
+                    </div>
+                    
+                    <div class="owasp-card">
+                        <div class="owasp-rank">A03:2021</div>
+                        <h3 class="owasp-title">Injection</h3>
+                        <div class="risk-meter">
+                            <div class="risk-level risk-high"></div>
+                        </div>
+                        <p class="owasp-description">Untrusted data is sent to an interpreter as part of a command or query.</p>
+                        <div class="owasp-example">
+                            // SQL Injection example<br>
+                            SELECT * FROM users WHERE username = '' OR '1'='1'
+                        </div>
+                        <div class="owasp-prevention">
+                            <strong>Prevention:</strong> Use parameterized queries, input validation, ORM frameworks
+                        </div>
+                    </div>
+                    
+                    <div class="owasp-card">
+                        <div class="owasp-rank">A04:2021</div>
+                        <h3 class="owasp-title">Insecure Design</h3>
+                        <div class="risk-meter">
+                            <div class="risk-level risk-medium"></div>
+                        </div>
+                        <p class="owasp-description">Security flaws in the architecture and design of the application.</p>
+                        <div class="owasp-example">
+                            // Design flaw: No rate limiting<br>
+                            // Allows unlimited login attempts
+                        </div>
+                        <div class="owasp-prevention">
+                            <strong>Prevention:</strong> Threat modeling, secure design patterns, security requirements
+                        </div>
+                    </div>
+                    
+                    <div class="owasp-card">
+                        <div class="owasp-rank">A05:2021</div>
+                        <h3 class="owasp-title">Security Misconfiguration</h3>
+                        <div class="risk-meter">
+                            <div class="risk-level risk-medium"></div>
+                        </div>
+                        <p class="owasp-description">Insecure configurations in any part of the application stack.</p>
+                        <div class="owasp-example">
+                            // Vulnerability: Default credentials<br>
+                            // admin/admin still enabled in production
+                        </div>
+                        <div class="owasp-prevention">
+                            <strong>Prevention:</strong> Hardened configurations, automated scanning, minimal platforms
+                        </div>
+                    </div>
+                    
+                    <div class="owasp-card">
+                        <div class="owasp-rank">A06:2021</div>
+                        <h3 class="owasp-title">Vulnerable Components</h3>
+                        <div class="risk-meter">
+                            <div class="risk-level risk-medium"></div>
+                        </div>
+                        <p class="owasp-description">Using dependencies with known vulnerabilities.</p>
+                        <div class="owasp-example">
+                            // Outdated library with CVE<br>
+                            log4j 1.2.17 (CVE-2021-44228)
+                        </div>
+                        <div class="owasp-prevention">
+                            <strong>Prevention:</strong> Software composition analysis, patch management, vulnerability scanning
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="integration-diagram">
+                    <h3 class="diagram-title">OWASP Integration in DevSecOps Pipeline</h3>
+                    <div class="pipeline-visual">
+                        <div class="pipeline-stage-visual">
+                            <div class="stage-circle">
+                                <i class="fas fa-edit"></i>
+                            </div>
+                            <div class="stage-label">Design</div>
+                        </div>
+                        <div class="pipeline-stage-visual">
+                            <div class="stage-circle">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <div class="stage-label">Develop</div>
+                        </div>
+                        <div class="pipeline-stage-visual">
+                            <div class="stage-circle">
+                                <i class="fas fa-cogs"></i>
+                            </div>
+                            <div class="stage-label">Build</div>
+                        </div>
+                        <div class="pipeline-stage-visual">
+                            <div class="stage-circle">
+                                <i class="fas fa-vial"></i>
+                            </div>
+                            <div class="stage-label">Test</div>
+                        </div>
+                        <div class="pipeline-stage-visual">
+                            <div class="stage-circle">
+                                <i class="fas fa-rocket"></i>
+                            </div>
+                            <div class="stage-label">Deploy</div>
+                        </div>
+                        <div class="pipeline-connector"></div>
+                        <div class="security-tools-overlay">
+                            <div class="security-tool">Threat Modeling</div>
+                            <div class="security-tool">SAST</div>
+                            <div class="security-tool">SCA</div>
+                            <div class="security-tool">DAST</div>
+                            <div class="security-tool">WAF</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="devsecops-tab">
+                <h2 class="section-title">
+                    <i class="fas fa-code-branch"></i> DevSecOps Pipeline Stages
+                </h2>
+                
+                <div class="devsecops-pipeline">
+                    <div class="pipeline-stage">
+                        <div class="stage-icon">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <div class="stage-content">
+                            <h3 class="stage-title">Plan & Design</h3>
+                            <p>Security requirements gathering, threat modeling, and security architecture design.</p>
+                            <div class="tools-grid">
+                                <div class="tool-item">OWASP ASVS</div>
+                                <div class="tool-item">Threat Model Tool</div>
+                                <div class="tool-item">Security Champions</div>
+                                <div class="tool-item">Risk Assessment</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="pipeline-stage">
+                        <div class="stage-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <div class="stage-content">
+                            <h3 class="stage-title">Develop</h3>
+                            <p>Secure coding practices, IDE security plugins, pre-commit hooks, and peer reviews.</p>
+                            <div class="tools-grid">
+                                <div class="tool-item">SAST Tools</div>
+                                <div class="tool-item">IDE Plugins</div>
+                                <div class="tool-item">Git Hooks</div>
+                                <div class="tool-item">Code Review</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="pipeline-stage">
+                        <div class="stage-icon">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <div class="stage-content">
+                            <h3 class="stage-title">Build & Package</h3>
+                            <p>Dependency scanning, container security, artifact signing, and security gates.</p>
+                            <div class="tools-grid">
+                                <div class="tool-item">SCA Tools</div>
+                                <div class="tool-item">Container Scan</div>
+                                <div class="tool-item">Signing</div>
+                                <div class="tool-item">Policy as Code</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="pipeline-stage">
+                        <div class="stage-icon">
+                            <i class="fas fa-vial"></i>
+                        </div>
+                        <div class="stage-content">
+                            <h3 class="stage-title">Test</h3>
+                            <p>Security testing, DAST, IAST, penetration testing, and security automation.</p>
+                            <div class="tools-grid">
+                                <div class="tool-item">DAST Tools</div>
+                                <div class="tool-item">IAST Tools</div>
+                                <div class="tool-item">Pen Testing</div>
+                                <div class="tool-item">API Security</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="pipeline-stage">
+                        <div class="stage-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <div class="stage-content">
+                            <h3 class="stage-title">Deploy & Operate</h3>
+                            <p>Infrastructure security, runtime protection, monitoring, and incident response.</p>
+                            <div class="tools-grid">
+                                <div class="tool-item">WAF</div>
+                                <div class="tool-item">RASP</div>
+                                <div class="tool-item">SIEM</div>
+                                <div class="tool-item">CSPM</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="coding-tab">
+                <h2 class="section-title">
+                    <i class="fas fa-laptop-code"></i> Secure Coding Principles
+                </h2>
+                
+                <div class="secure-coding-grid">
+                    <div class="principle-card">
+                        <div class="principle-icon">
+                            <i class="fas fa-check-double"></i>
+                        </div>
+                        <h3 class="principle-title">Input Validation</h3>
+                        <p class="principle-description">Validate all inputs from untrusted sources. Use allowlists rather than denylists.</p>
+                    </div>
+                    
+                    <div class="principle-card">
+                        <div class="principle-icon">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <h3 class="principle-title">Authentication & Authorization</h3>
+                        <p class="principle-description">Implement strong authentication and proper authorization checks for all requests.</p>
+                    </div>
+                    
+                    <div class="principle-card">
+                        <div class="principle-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <h3 class="principle-title">Cryptography</h3>
+                        <p class="principle-description">Use strong, standard cryptographic algorithms and proper key management.</p>
+                    </div>
+                    
+                    <div class="principle-card">
+                        <div class="principle-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3 class="principle-title">Error Handling</h3>
+                        <p class="principle-description">Handle errors gracefully without exposing sensitive information.</p>
+                    </div>
+                    
+                    <div class="principle-card">
+                        <div class="principle-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <h3 class="principle-title">Secure Database Access</h3>
+                        <p class="principle-description">Use parameterized queries and stored procedures to prevent SQL injection.</p>
+                    </div>
+                    
+                    <div class="principle-card">
+                        <div class="principle-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h3 class="principle-title">Session Management</h3>
+                        <p class="principle-description">Implement secure session management with proper timeout and rotation.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="tools-tab">
+                <h2 class="section-title">
+                    <i class="fas fa-tools"></i> Security Tools Matrix
+                </h2>
+                
+                <div class="tools-matrix">
+                    <div class="tool-category">
+                        <h3 class="category-title">
+                            <i class="fas fa-search"></i> SAST Tools
+                        </h3>
+                        <ul class="tool-list">
+                            <li class="tool-list-item">
+                                <span class="tool-badge">Commercial</span>
+                                Checkmarx
+                            </li>
+                            <li class="tool-list-item">
+                                <span class="tool-badge">Commercial</span>
+                                Fortify
+                            </li>
+                            <li class="tool-list-item">
+                                <span class="tool-badge">Open Source</span>
+                                SonarQube
+                            </li>
+                            <li class="tool-list-item">
+                                <span class="tool-badge">Open Source</span>
+                                Semgrep
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tool-category">
+                        <h3 class="category-title">
+                            <i class="fas fa-globe"></i> DAST Tools
+                        </h3>
+                        <ul class="tool-list">
+                            <li class="tool-list-item">
+                                <span class="tool-badge">Commercial</span>
+                                Burp Suite
+                            </li>
+                            <li class="tool-list-item">
+                                <span class="tool-badge">Commercial</span>
+                                Acunetix
+                            </li>
+                            <li class="tool-list-item">
+                                <span class="tool-badge">Open Source</span>
+                                OWASP ZAP
+                            </li>
+                            <li class="tool-list-item">
+                                <span class="tool-badge">Open Source</span>
+                                Nikto
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tool-category">
+                        <h3 class="category-title">
+                            <i class="fas fa-cube"></i> SCA Tools
+                        </h3>
+                        <ul class="tool-list">
+                            <li class="tool-list-item">
+                                <span class="tool-badge">Commercial</span>
+                                Snyk
+                            </li>
+                            <li class="tool-list-item">
+                                <span class="tool-badge">Commercial</span>
+                                WhiteSource
+                            </li>
+                            <li class="tool-list-item">
+                                <span class="tool-badge">Open Source</span>
+                                OWASP Dependency Check
+                            </li>
+                            <li class="tool-list-item">
+                                <span class="tool-badge">Open Source</span>
+                                Trivy
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tool-category">
+                        <h3 class="category-title">
+                            <i class="fas fa-server"></i> Container Security
+                        </h3>
+                        <ul class="tool-list">
+                            <li class="tool-list-item">
+                                <span class="tool-badge">Commercial</span>
+                                Twistlock
+                            </li>
+                            <li class="tool-list-item">
+                                <span class="tool-badge">Commercial</span>
+                                Aqua Security
+                            </li>
+                            <li class="tool-list-item">
+                                <span class="tool-badge">Open Source</span>
+                                Clair
+                            </li>
+                            <li class="tool-list-item">
+                                <span class="tool-badge">Open Source</span>
+                                Trivy
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tool-category">
+                        <h3 class="category-title">
+                            <i class="fas fa-shield-alt"></i> Infrastructure Security
+                        </h3>
+                        <ul class="tool-list">
+                            <li class="tool-list-item">
+                                <span class="tool-badge">Commercial</span>
+                                Palo Alto Prisma
+                            </li>
+                            <li class="tool-list-item">
+                                <span class="tool-badge">Commercial</span>
+                                Wiz
+                            </li>
+                            <li class="tool-list-item">
+                                <span class="tool-badge">Open Source</span>
+                                Terrascan
+                            </li>
+                            <li class="tool-list-item">
+                                <span class="tool-badge">Open Source</span>
+                                Checkov
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tool-category">
+                        <h3 class="category-title">
+                            <i class="fas fa-code"></i> IDE Security Plugins
+                        </h3>
+                        <ul class="tool-list">
+                            <li class="tool-list-item">
+                                <span class="tool-badge">Free</span>
+                                SonarLint
+                            </li>
+                            <li class="tool-list-item">
+                                <span class="tool-badge">Free</span>
+                                Snyk IDE Plugin
+                            </li>
+                            <li class="tool-list-item">
+                                <span class="tool-badge">Free</span>
+                                CodeQL
+                            </li>
+                            <li class="tool-list-item">
+                                <span class="tool-badge">Free</span>
+                                GitGuardian
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tabId = btn.getAttribute('data-tab');
+                    
+                    // Remove active class from all buttons and contents
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to current button and content
+                    btn.classList.add('active');
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                });
+            });
+            
+            // Add animation to OWASP cards on scroll
+            const observerOptions = {
+                threshold: 0.2,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animation = 'fadeIn 0.6s ease forwards';
+                    }
+                });
+            }, observerOptions);
+            
+            document.querySelectorAll('.owasp-card, .principle-card, .tool-category').forEach(card => {
+                card.style.opacity = '0';
+                observer.observe(card);
+            });
+            
+            // Add risk meter animation
+            setTimeout(() => {
+                document.querySelectorAll('.risk-level').forEach(risk => {
+                    risk.style.width = risk.classList.contains('risk-high') ? '80%' : 
+                                     risk.classList.contains('risk-medium') ? '60%' : '30%';
+                });
+            }, 500);
+        });
+    </script>
+</body>
+</html>
